@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'email', 'password', 'profile_status'
     ];
 
     /**
@@ -25,16 +25,28 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'pivot',
     ];
 
     public function followings()
     {
-        return $this->belongsToMany('App\User','users_relationships','follower_id','following_id');
+        return $this->belongsToMany(User::class, 'users_relationships', 'follower_id', 'following_id')
+            ->with('profile');
     }
 
     public function followers()
     {
-        return $this->belongsToMany('App\User','users_relationships','following_id','follower_id');
+        return $this->belongsToMany(User::class, 'users_relationships', 'following_id', 'follower_id')
+            ->with('profile');
+    }
+
+    public function medias()
+    {
+        return $this->hasMany(Media::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
     }
 }
