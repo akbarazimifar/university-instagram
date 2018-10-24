@@ -16,8 +16,8 @@ class CreateUsersProfilesTable extends Migration
         Schema::create('users_profiles', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->unique();
-            $table->string('thumb_path');
             $table->string('file_path');
+            $table->string('thumb_path');
             $table->integer('width');
             $table->integer('height');
 
