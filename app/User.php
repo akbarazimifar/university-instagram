@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'pivot', 'created_at', 'updated_at'
+        'email', 'password', 'remember_token', 'pivot', 'created_at', 'updated_at'
     ];
 
     public function followings()
