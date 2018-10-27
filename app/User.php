@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -42,11 +43,30 @@ class User extends Authenticatable
 
     public function medias()
     {
-        return $this->hasMany(Media::class);
+        return $this->hasMany(Media::class)->withCount(['likes']);
     }
 
     public function profile()
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public static function checkUserViewPermission(User $user)
+    {
+        if ($user->profile_status === "PRIVATE" && Auth::user()->id !== $user->id) {
+            try {
+                UserRelationship::where('follower_id', '=', Auth::user()->id)
+                    ->where('following_id', '=', $user->id)
+                    ->where('is_accepted', '=', true)
+                    ->firstOrFail();
+                // user is followed
+            } catch (\Exception $e) {
+                // user is not followed
+                return response([
+                    'ok'          => 'false',
+                    'description' => 'User is not Followed.'
+                ], 403);
+            }
+        }
     }
 }
