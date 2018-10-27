@@ -24,6 +24,9 @@ class UserTest extends TestCase
             'first_name',
             'last_name',
             'profile_status',
+            'followers_count',
+            'followings_count',
+            'medias_count',
             'profile' => [
                 'file_path',
                 'thumb_path',
