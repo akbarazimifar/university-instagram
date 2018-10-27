@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware(['auth:api', 'username'])->group(function () {
-    Route::get('{username}', 'UserController@show')->name('user.profile');
-    Route::get('{username}/medias', 'MediaController@getUserMedias')->name('user.medias');
-    Route::get('{username}/media/{id}', 'MediaController@getUserMedia')->name('user.media')->where('id', '[0-9]+');
+    Route::prefix('{username}')->name('user.')->group(function () {
+        Route::get('.', 'UserController@show')->name('profile');
+        Route::get('medias', 'MediaController@getUserMedias')->name('medias');
+        Route::get('media/{id}', 'MediaController@getUserMedia')->name('media')->where('id', '[0-9]+');
+    });
 });
