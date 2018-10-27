@@ -14,6 +14,7 @@ class CreateUsersRelationshipsTable extends Migration
     public function up()
     {
         Schema::create('users_relationships', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('follower_id');
             $table->unsignedInteger('following_id');
             $table->boolean('is_accepted')->default(false);
