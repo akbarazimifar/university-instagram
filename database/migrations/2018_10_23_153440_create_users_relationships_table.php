@@ -16,6 +16,8 @@ class CreateUsersRelationshipsTable extends Migration
         Schema::create('users_relationships', function (Blueprint $table) {
             $table->unsignedInteger('follower_id');
             $table->unsignedInteger('following_id');
+            $table->boolean('is_accepted')->default(false);
+            $table->timestamps();
 
             $table->foreign('follower_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('following_id')->references('id')->on('users')->onDelete('cascade');
