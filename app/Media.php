@@ -19,6 +19,8 @@ class Media extends Model
 
     public function likes()
     {
-        return $this->belongsToMany(User::class, 'medias_likes', 'media_id', 'user_id')->with('profile');
+        return $this->belongsToMany(User::class, 'medias_likes', 'media_id', 'user_id')
+            ->with('profile')
+            ->limit(config('instagram.limit.media.like'));
     }
 }

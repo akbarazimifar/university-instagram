@@ -7,6 +7,11 @@
  */
 
 return [
+    'limit' => [
+        'media' => [
+            'like' => 5
+        ]
+    ],
     'paginate_per_page' => [
         'medias' => 12
     ]

@@ -25,8 +25,10 @@ class MediaController extends Controller
         $result = User::checkUserViewPermission($user);
         if (!empty($result)) return $result;
         try {
-            return Media::whereId($request->get('id'))
-                ->WhereUserId($user->id)
+            return Media::whereId((int) $request->route('id'))
+                ->whereUserId($user->id)
+                ->withCount('likes')
+                ->with(['likes'])
                 ->firstOrFail();
         } catch (\Exception $e) {
             return response(['ok' => false, 'description' => 'Unknown media id.'], 400);
