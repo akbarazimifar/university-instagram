@@ -99,9 +99,9 @@ class MediaTest extends TestCase
         ]);
 
         // add a like
-        try{
+        try {
             MediaLike::create(['user_id' => self::$user->id, 'media_id' => $media->id]);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->fail('Could not add new like to media');
             return false;
         }
@@ -113,7 +113,7 @@ class MediaTest extends TestCase
             [
                 'user_id',
                 'media_id',
-                'user'=> [
+                'user' => [
                     'id',
                     'username',
                     'first_name',
@@ -127,6 +127,57 @@ class MediaTest extends TestCase
                     ]
                 ],
             ]
+        ]);
+    }
+
+    public function testLikeUserMedia()
+    {
+        // delete all likes
+        MediaLike::truncate();
+        Passport::actingAs(self::$user);
+        $target_user = User::findOrFail(2);
+        $target_user->profile_status = "PRIVATE";
+        $target_user->save();
+        $target_media = Media::whereUserId($target_user->id)->firstOrFail();
+
+        $parameters = [
+            'username' => $target_user->username,
+            'id'       => 99999999
+        ];
+        $response = $this->call('patch', Route('user.media.like', $parameters));
+        $response->assertStatus(400);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => false,
+            'status_code' => 400,
+            'description' => 'Wrong media id.'
+        ]);
+
+        $parameters = [
+            'username' => self::$user->username,
+            'id'       => $target_media->id
+        ];
+        $response = $this->call('patch', Route('user.media.like', $parameters));
+        $response->assertStatus(403);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'Ownership of this media is not for the requested user.'
+        ]);
+
+        $parameters = [
+            'username' => $target_user->username,
+            'id'       => $target_media->id
+        ];
+
+        $response = $this->call('patch', Route('user.media.like', $parameters));
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'Post liked.'
         ]);
     }
 }
