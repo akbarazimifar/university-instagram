@@ -11,7 +11,11 @@ class UserController extends Controller
     public function follow(Request $request)
     {
         $user = $request->get('user_object');
-        if ($user->id === Auth::user()->id) return response('You can\'t follow your self.', 400);
+        if ($user->id === Auth::user()->id) return response([
+            'ok'          => false,
+            'status_code' => 400,
+            'description' => 'You can\'t follow your self.'
+        ], 400);
         // check user is followed or not
         try {
             $relationship = UserRelationship::where('follower_id', '=', Auth::user()->id)
