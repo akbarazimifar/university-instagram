@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('feeds','FeedController@homepage')->middleware('auth:api')->name('user.feeds');
 Route::get('search', 'UserController@search')->middleware('auth:api')->name('user.search');
 Route::middleware(['auth:api', 'username'])->group(function () {
     Route::prefix('{username}')->name('user.')->group(function () {
