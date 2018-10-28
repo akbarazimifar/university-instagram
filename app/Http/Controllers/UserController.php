@@ -25,9 +25,9 @@ class UserController extends Controller
         }
 
         $query = $request->get('query');
-        return User::where('username', 'LIKE', $query)
-            ->orWhere('first_name', 'LIKE', $query)
-            ->orWhere('last_name', 'LIKE', $query)
+        return User::where('username', 'LIKE', '%' . $query . '%')
+            ->orWhere('first_name', 'LIKE', '%' . $query . '%')
+            ->orWhere('last_name', 'LIKE', '%' . $query . '%')
             ->withCount(['followers', 'followings', 'medias'])
             ->with('profile')
             ->paginate(10);
