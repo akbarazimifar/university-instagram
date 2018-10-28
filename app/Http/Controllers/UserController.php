@@ -2,12 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\UserRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function search(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'query' => 'required|min:3|max:255|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => $validator->messages()
+            ], 400);
+        }
+
+        $query = $request->get('query');
+        return User::where('username', 'LIKE', $query)
+            ->orWhere('first_name', 'LIKE', $query)
+            ->orWhere('last_name', 'LIKE', $query)
+            ->withCount(['followers', 'followings', 'medias'])
+            ->with('profile')
+            ->paginate(10);
+    }
+
     public function follow(Request $request)
     {
         $user = $request->get('user_object');

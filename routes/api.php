@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('search', 'UserController@search')->middleware('auth:api')->name('user.search');
 Route::middleware(['auth:api', 'username'])->group(function () {
     Route::prefix('{username}')->name('user.')->group(function () {
         Route::get('.', 'UserController@show')->name('profile');

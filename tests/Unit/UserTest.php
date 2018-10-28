@@ -13,9 +13,57 @@ class UserTest extends TestCase
 {
     private static $user;
 
-    public function testUserProfile()
+    public function testSearch()
     {
         self::$user = User::first();
+        Passport::actingAs(self::$user);
+        $response = $this->call('get', Route('user.search', ['query' => self::$user->username]));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'current_page',
+            'data' => [
+                [
+                    'id',
+                    'username',
+                    'first_name',
+                    'last_name',
+                    'profile_status',
+                    'followers_count',
+                    'followings_count',
+                    'medias_count',
+                    'profile' => [
+                        'file_path',
+                        'thumb_path',
+                        'width',
+                        'height'
+                    ]
+                ]
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total'
+        ]);
+
+        $response = $this->call('get', Route('user.search', ['query' => 'a']));
+        $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'ok',
+            'status_code',
+            'description' => [
+                'query' => []
+            ]
+        ]);
+    }
+
+    public function testUserProfile()
+    {
         Passport::actingAs(self::$user);
         $response = $this->call('get', Route('user.profile', self::$user->username));
         $response->assertStatus(200);
@@ -54,7 +102,7 @@ class UserTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonStructure(['ok', 'status_code', 'description']);
         $response->assertJson([
-            'ok' => true,
+            'ok'          => true,
             'status_code' => 201,
             'description' => 'The follow request has been sent.'
         ]);
@@ -64,14 +112,14 @@ class UserTest extends TestCase
         $response->assertStatus(202);
         $response->assertJsonStructure(['ok', 'status_code', 'description']);
         $response->assertJson([
-            'ok' => true,
+            'ok'          => true,
             'status_code' => 202,
             'description' => 'There is an ongoing follow request that need to be accepted.'
         ]);
 
         // accept the follow request
-        $relationship = UserRelationship::where('follower_id','=',self::$user->id)
-            ->where('following_id','=',$request_to_follow_user->id)
+        $relationship = UserRelationship::where('follower_id', '=', self::$user->id)
+            ->where('following_id', '=', $request_to_follow_user->id)
             ->firstOrFail();
         $relationship->is_accepted = true;
         $relationship->save();
@@ -81,7 +129,7 @@ class UserTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure(['ok', 'status_code', 'description']);
         $response->assertJson([
-            'ok' => true,
+            'ok'          => true,
             'status_code' => 200,
             'description' => 'User is already followed.'
         ]);
