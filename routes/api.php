@@ -22,6 +22,8 @@ Route::middleware(['auth:api', 'username'])->group(function () {
 
         Route::get('media/{id}/likes', 'MediaController@getUserMediaLikes')->name('media.likes')->where('id', '[0-9]+');
         Route::patch('media/{id}/like', 'MediaController@likeUserMedia')->name('media.like')->where('id', '[0-9]+');
+        Route::delete('media/{id}/delete','MediaController@delete')->name('media.delete')->where('id', '[0-9]+');
+        Route::patch('media/{id}/edit','MediaController@edit')->name('media.edit')->where('id', '[0-9]+');
 
         Route::patch('follow', 'UserController@follow')->name('follow');
         Route::patch('unfollow', 'UserController@unFollow')->name('unfollow');
