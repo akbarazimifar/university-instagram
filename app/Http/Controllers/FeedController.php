@@ -33,7 +33,7 @@ class FeedController extends Controller
 
     protected function checkUserHasFollowings()
     {
-        return (bool)UserRelationship::whereFollowerId(Auth::user()->id)
+        return (bool) UserRelationship::whereFollowerId(Auth::user()->id)
             ->whereIsAccepted(true)
             ->limit(1)
             ->count();
