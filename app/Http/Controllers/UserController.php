@@ -89,7 +89,35 @@ class UserController extends Controller
 
     public function unFollow(Request $request)
     {
+        // TODO: complete this
+    }
 
+    public function followers(Request $request)
+    {
+        $user = $request->get('user_object');
+        $result = User::checkUserViewPermission($user);
+        if (!empty($result)) return $result;
+        return User::select('users.*')
+            ->with(['profile'])
+            ->join('users_relationships', 'users.id', '=', 'users_relationships.follower_id')
+            ->where('users_relationships.following_id', '=', $user->id)
+            ->where('users_relationships.is_accepted', '=', true)
+            ->orderByDesc('id')
+            ->paginate();
+    }
+
+    public function followings(Request $request)
+    {
+        $user = $request->get('user_object');
+        $result = User::checkUserViewPermission($user);
+        if (!empty($result)) return $result;
+        return User::select('users.*')
+            ->with(['profile'])
+            ->join('users_relationships', 'users.id', '=', 'users_relationships.following_id')
+            ->where('users_relationships.follower_id', '=', $user->id)
+            ->where('users_relationships.is_accepted', '=', true)
+            ->orderByDesc('id')
+            ->paginate();
     }
 
     public function show(Request $request)

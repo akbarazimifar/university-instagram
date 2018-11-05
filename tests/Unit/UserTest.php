@@ -85,6 +85,86 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function testFollowers()
+    {
+        UserRelationship::truncate();
+        UserRelationship::insert([
+            ['follower_id' => 1, 'following_id' => 2, 'is_accepted' => 1],
+            ['follower_id' => 2, 'following_id' => 1, 'is_accepted' => 1]
+        ]);
+        Passport::actingAs(self::$user);
+        $response = $this->call('get', Route('user.followers', User::first()->username));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'current_page',
+            'data' => [
+                [
+                    'id',
+                    'username',
+                    'first_name',
+                    'last_name',
+                    'profile_status',
+                    'profile' => [
+                        'file_path',
+                        'thumb_path',
+                        'width',
+                        'height'
+                    ]
+                ]
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total'
+        ]);
+    }
+
+    public function testFollowings()
+    {
+        UserRelationship::truncate();
+        UserRelationship::insert([
+            ['follower_id' => 1, 'following_id' => 2, 'is_accepted' => 1],
+            ['follower_id' => 2, 'following_id' => 1, 'is_accepted' => 1]
+        ]);
+        Passport::actingAs(self::$user);
+        $response = $this->call('get', Route('user.followings', User::first()->username));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'current_page',
+            'data' => [
+                [
+                    'id',
+                    'username',
+                    'first_name',
+                    'last_name',
+                    'profile_status',
+                    'profile' => [
+                        'file_path',
+                        'thumb_path',
+                        'width',
+                        'height'
+                    ]
+                ]
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total'
+        ]);
+    }
+
     public function testFollow()
     {
         // delete all relationships
