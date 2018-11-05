@@ -23,4 +23,9 @@ class Media extends Model
             ->with('profile')
             ->limit(config('instagram.limit.media.like'));
     }
+
+    public function user()
+    {
+        return $this->hasOne('App\User','id','user_id');
+    }
 }
