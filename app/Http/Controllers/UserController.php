@@ -62,8 +62,12 @@ class UserController extends Controller
         } catch (\Exception $e) {
             if ($user->profile_status === "PUBLIC") {
                 $is_accepted = true;
+                $status_code = 200;
+                $description = 'User successfully followed.';
             } else {
                 $is_accepted = false;
+                $status_code = 201;
+                $description = 'The follow request has been sent.';
             }
             try {
                 UserRelationship::create([
@@ -73,9 +77,9 @@ class UserController extends Controller
                 ]);
                 return response([
                     'ok'          => true,
-                    'status_code' => 201,
-                    'description' => 'The follow request has been sent.'
-                ], 201);
+                    'status_code' => $status_code,
+                    'description' => $description
+                ], $status_code);
             } catch (\Exception $e) {
                 return response([
                     'ok'          => false,

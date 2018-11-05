@@ -213,5 +213,20 @@ class UserTest extends TestCase
             'status_code' => 200,
             'description' => 'User is already followed.'
         ]);
+
+        // delete all relationships
+        UserRelationship::truncate();
+        $request_to_follow_user->profile_status = "PUBLIC";
+        $request_to_follow_user->save();
+
+        // resend the request
+        $response = $this->call('patch', Route('user.follow', $request_to_follow_user->username));
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'User successfully followed.'
+        ]);
     }
 }
