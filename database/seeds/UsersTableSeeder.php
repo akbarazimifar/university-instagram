@@ -19,5 +19,6 @@ class UsersTableSeeder extends Seeder
             $user->profile()->save(factory(App\UserProfile::class)->make());
         });
         UserRelationship::create(['follower_id' => 1, 'following_id' => 2, 'is_accepted' => 1]);
+        UserRelationship::create(['follower_id' => 2, 'following_id' => 1, 'is_accepted' => 1]);
     }
 }
