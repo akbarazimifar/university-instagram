@@ -13,4 +13,9 @@ class UserRelationship extends Model
     ];
 
     public $timestamps = true;
+
+    public function followings()
+    {
+        return $this->hasMany('App\User','id','following_id');
+    }
 }
