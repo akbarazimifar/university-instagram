@@ -187,4 +187,14 @@ class MediaTest extends TestCase
             'description' => 'Post liked.'
         ]);
     }
+
+    public function testEdit()
+    {
+        // TODO: complete this
+    }
+
+    public function testDelete()
+    {
+        // TODO: complete this
+    }
 }
