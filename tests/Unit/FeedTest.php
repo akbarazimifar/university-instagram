@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\User;
+use App\UserRelationship;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +17,11 @@ class FeedTest extends TestCase
     {
         self::$user = User::first();
         Passport::actingAs(self::$user);
+        UserRelationship::truncate();
+        UserRelationship::insert([
+            ['follower_id' => 1, 'following_id' => 2, 'is_accepted' => 1],
+            ['follower_id' => 2, 'following_id' => 1, 'is_accepted' => 1]
+        ]);
         $response = $this->call('get', Route('user.feeds'));
         $response->assertStatus(200);
         $response->assertJsonStructure([

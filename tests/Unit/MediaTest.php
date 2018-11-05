@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Media;
 use App\MediaLike;
 use App\User;
+use App\UserRelationship;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -17,7 +18,13 @@ class MediaTest extends TestCase
     public function testUserMedias()
     {
         self::$user = User::first();
-        Passport::actingAs(User::findOrFail(2));
+        $second_user = User::findOrFail(2);
+        Passport::actingAs($second_user);
+        UserRelationship::truncate();
+        UserRelationship::insert([
+            ['follower_id' => 1, 'following_id' => 2, 'is_accepted' => 1],
+            ['follower_id' => 2, 'following_id' => 1, 'is_accepted' => 1]
+        ]);
         $response = $this->call('get', Route('user.medias', self::$user->username));
         switch ($response->getStatusCode()) {
             case 403:
