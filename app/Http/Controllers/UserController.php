@@ -93,7 +93,30 @@ class UserController extends Controller
 
     public function unFollow(Request $request)
     {
-        // TODO: complete this
+        $user = $request->get('user_object');
+        if ($user->id === Auth::user()->id) return response([
+            'ok'          => false,
+            'status_code' => 400,
+            'description' => 'You can\'t unfollow your self.'
+        ], 400);
+        // check user is followed or not
+        try {
+            UserRelationship::where('follower_id', '=', Auth::user()->id)
+                ->where('following_id', '=', $user->id)
+                ->firstOrFail()
+                ->delete();
+            return response([
+                'ok'          => true,
+                'status_code' => 200,
+                'description' => 'User successfully unfollowed.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 406,
+                'description' => 'User it is not followed.'
+            ], 406);
+        }
     }
 
     public function followers(Request $request)

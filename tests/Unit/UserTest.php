@@ -229,4 +229,36 @@ class UserTest extends TestCase
             'description' => 'User successfully followed.'
         ]);
     }
+
+    public function testUnFollow()
+    {
+        // delete all relationships
+        UserRelationship::truncate();
+        Passport::actingAs(self::$user);
+
+        // change profile status to private
+        $request_to_unfollow_user = User::findOrFail(2);
+
+        $response = $this->call('patch', Route('user.unfollow', $request_to_unfollow_user->username));
+        $response->assertStatus(406);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => false,
+            'status_code' => 406,
+            'description' => 'User it is not followed.'
+        ]);
+
+        UserRelationship::insert([
+            ['follower_id' => self::$user->id, 'following_id' => $request_to_unfollow_user->id, 'is_accepted' => 1]
+        ]);
+
+        $response = $this->call('patch', Route('user.unfollow', $request_to_unfollow_user->username));
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'User successfully unfollowed.'
+        ]);
+    }
 }
