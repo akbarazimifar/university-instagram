@@ -103,4 +103,14 @@ class MediaController extends Controller
             ], 500);
         }
     }
+
+    public function delete(Request $request)
+    {
+        // TODO: complete this
+    }
+
+    public function edit(Request $request)
+    {
+        // TODO: complete this
+    }
 }
