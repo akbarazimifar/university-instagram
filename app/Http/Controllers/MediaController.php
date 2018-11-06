@@ -70,7 +70,6 @@ class MediaController extends Controller
         $result = User::checkUserViewPermission($user);
         if (!empty($result)) return $result;
 
-
         // check media ownership
         try {
             $media = Media::findOrFail((int)$request->route('id'));
@@ -148,11 +147,86 @@ class MediaController extends Controller
 
     public function delete(Request $request)
     {
-        // TODO: complete this
+        $user = $request->get('user_object');
+        if ($user->id !== Auth::user()->id) return response([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'This media does not belongs to you.'
+        ], 403);
+
+        try {
+            $media = Media::findOrFail((int)$request->route('id'));
+        } catch (\Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => 'Wrong media id.'
+            ], 400);
+        }
+
+        if ($media->user()->id !== Auth::user()->id) return response([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'This media does not belongs to you.'
+        ], 403);
+
+        try {
+            $media->delete();
+            return response([
+                'ok'          => true,
+                'status_code' => 200,
+                'description' => 'Media successfully deleted.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 500,
+                'description' => 'Could not delete media.'
+            ], 500);
+        }
     }
 
     public function edit(Request $request)
     {
-        // TODO: complete this
+        $validator = Validator::make($request->all(), [
+            'caption' => 'nullable|string'
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => $validator->errors()
+            ], 400);
+        }
+
+        $user = $request->get('user_object');
+        if ($user->id !== Auth::user()->id) return response([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'This media does not belongs to you.'
+        ], 403);
+
+        try {
+            $media = Media::findOrFail((int)$request->route('id'));
+        } catch (\Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => 'Wrong media id.'
+            ], 400);
+        }
+
+        if ($media->user->id !== Auth::user()->id) return response([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'This media does not belongs to you.'
+        ], 403);
+
+        $media->update($request->only(['caption']));
+        return response([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'Media updated.'
+        ], 200);
     }
 }

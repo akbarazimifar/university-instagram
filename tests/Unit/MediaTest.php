@@ -15,6 +15,7 @@ use Illuminate\Http\UploadedFile;
 class MediaTest extends TestCase
 {
     private static $user;
+    private static $media;
 
     public function testUserMedias()
     {
@@ -210,11 +211,53 @@ class MediaTest extends TestCase
 
     public function testEdit()
     {
-        // TODO: complete this
+        Passport::actingAs(self::$user);
+        self::$media = Media::create([
+            'user_id'    => self::$user->id,
+            'width'      => 1,
+            'height'     => 1,
+            'file_path'  => 'a',
+            'thumb_path' => 'a',
+            'caption'    => 'a'
+        ]);
+        $response = $this->json('patch', Route('user.media.edit', [
+            'username' => self::$user->username,
+            'id'       => self::$media->id
+        ]), ['caption' => 'lol']);
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'Media updated.'
+        ]);
+        $wrong_media = Media::where('user_id', '!=', self::$user->id)->firstOrFail();
+        $response = $this->json('patch', Route('user.media.edit', [
+            'username' => self::$user->username,
+            'id'       => $wrong_media->id
+        ]), ['caption' => 'lol']);
+        $response->assertStatus(403);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'This media does not belongs to you.'
+        ]);
     }
 
     public function testDelete()
     {
-        // TODO: complete this
+        Passport::actingAs(self::$user);
+        $response = $this->json('patch', Route('user.media.edit', [
+            'username' => self::$user->username,
+            'id'       => self::$media->id
+        ]), ['caption' => 'lol']);
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'Media updated.'
+        ]);
     }
 }
