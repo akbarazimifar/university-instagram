@@ -20,6 +20,8 @@ Route::middleware(['auth:api'])->group(function () {
 Route::middleware(['auth:api', 'username'])->group(function () {
     Route::prefix('{username}')->name('user.')->group(function () {
         Route::get('.', 'UserController@show')->name('profile');
+        Route::patch('edit', 'UserController@edit')->name('profile.edit');
+
         Route::get('medias', 'MediaController@getUserMedias')->name('medias');
         Route::get('media/{id}', 'MediaController@getUserMedia')->name('media')->where('id', '[0-9]+');
 
