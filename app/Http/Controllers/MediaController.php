@@ -7,6 +7,9 @@ use App\MediaLike;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 use Mockery\Exception;
 
 class MediaController extends Controller
@@ -70,7 +73,7 @@ class MediaController extends Controller
 
         // check media ownership
         try {
-            $media = Media::findOrFail((int) $request->route('id'));
+            $media = Media::findOrFail((int)$request->route('id'));
         } catch (\Exception $e) {
             return response([
                 'ok'          => false,
@@ -102,6 +105,45 @@ class MediaController extends Controller
                 'description' => 'Internal error occurs when liking the media.'
             ], 500);
         }
+    }
+
+    public function upload(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file'    => 'required|file|image|dimensions:min_width=400,min_height=400',
+            'caption' => 'nullable|string'
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => $validator->errors()
+            ], 400);
+        }
+        $file_path = Storage::put('public/medias', $request->file('file'));
+        try {
+            $img = Image::make($request->file('file'));
+            $width = $img->width();
+            $height = $img->height();
+            $img->fit(300, 300, function ($constraint) {
+                $constraint->upsize();
+            });
+            $img->save('public/storage/medias/thumbs/' . basename($file_path));
+        } catch (\Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 500,
+                'description' => $e->getMessage()
+            ], 500);
+        }
+        return Media::create([
+            'user_id'    => Auth::user()->id,
+            'file_path'  => basename($file_path),
+            'thumb_path' => 'thumbs/' . basename($file_path),
+            'width'      => $width,
+            'height'     => $height,
+            'caption'    => $request->get('caption')
+        ]);
     }
 
     public function delete(Request $request)
