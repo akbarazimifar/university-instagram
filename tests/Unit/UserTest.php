@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\User;
 use App\UserRelationship;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -259,6 +260,26 @@ class UserTest extends TestCase
             'ok'          => true,
             'status_code' => 200,
             'description' => 'User successfully unfollowed.'
+        ]);
+    }
+
+    public function testEdit()
+    {
+        Passport::actingAs(self::$user);
+        $response = $this->json('patch', Route('user.profile.edit', self::$user->username), [
+            'first_name'            => 'test',
+            'last_name'             => 'test',
+            'password'              => 123456789,
+            'password_confirmation' => 123456789,
+            'profile_status'        => 'PUBLIC',
+            'profile_photo'         => UploadedFile::fake()->image('avatar.jpg', 500, 500)
+        ]);
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['ok', 'status_code', 'description']);
+        $response->assertJson([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'Profile updated.'
         ]);
     }
 }

@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\UserProfile;
 use App\UserRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -90,7 +94,6 @@ class UserController extends Controller
         }
     }
 
-
     public function unFollow(Request $request)
     {
         $user = $request->get('user_object');
@@ -153,5 +156,55 @@ class UserController extends Controller
             ->withCount(['followers', 'followings', 'medias'])
             ->with('profile')
             ->first();
+    }
+
+    public function edit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'profile_photo'  => 'nullable|file|image|dimensions:min_width=200,min_height=200',
+            'first_name'     => 'required|string|min:2|max:60',
+            'last_name'      => 'nullable|string|min:2|max:60',
+            'password'       => 'min:6|confirmed',
+            'profile_status' => 'in:PRIVATE,PUBLIC'
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => $validator->errors()
+            ], 400);
+        }
+
+        $user = Auth::user();
+        if ($request->hasFile('profile_photo')) {
+            $file_path = Storage::put('public/profiles', $request->file('profile_photo'));
+            $img = Image::make($request->file('profile_photo'));
+            $width = $img->width();
+            $height = $img->height();
+            $img->fit(300, 300, function ($constraint) {
+                $constraint->upsize();
+            });
+            $img->save('public/storage/profiles/thumbs/' . basename($file_path));
+            $user_profile_data = [
+                'user_id'    => $user->id,
+                'thumb_path' => 'thumbs/' . basename($file_path),
+                'file_path'  => basename($file_path),
+                'width'      => $width,
+                'height'     => $height
+            ];
+            UserProfile::updateOrCreate(['user_id'    => $user->id],$user_profile_data);
+        }
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
+        }
+        $user->update($request->only([
+            'first_name', 'last_name', 'profile_status'
+        ]));
+        return response([
+            'ok'          => true,
+            'status_code' => 200,
+            'description' => 'Profile updated.'
+        ], 200);
     }
 }
