@@ -8,6 +8,8 @@ class UserProfile extends Model
 {
     protected $table = 'users_profiles';
 
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
         'user_id', 'thumb_path', 'file_path', 'width', 'height'
     ];
