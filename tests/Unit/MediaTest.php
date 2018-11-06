@@ -10,6 +10,7 @@ use Laravel\Passport\Passport;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 
 class MediaTest extends TestCase
 {
@@ -185,6 +186,25 @@ class MediaTest extends TestCase
             'ok'          => true,
             'status_code' => 200,
             'description' => 'Post liked.'
+        ]);
+    }
+
+    public function testUpload()
+    {
+        Passport::actingAs(self::$user);
+        $response = $this->json('POST', Route('user.media.upload'), [
+            'file'    => UploadedFile::fake()->image('avatar.jpg', 500, 500),
+            'caption' => ''
+        ]);
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'file_path',
+            'thumb_path',
+            'width',
+            'height',
+            'caption',
+            'created_at',
+            'id'
         ]);
     }
 
