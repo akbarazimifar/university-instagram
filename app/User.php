@@ -29,6 +29,8 @@ class User extends Authenticatable
         'email', 'password', 'remember_token', 'pivot', 'created_at', 'updated_at'
     ];
 
+    protected $appends = ['is_followed'];
+
     public function followings()
     {
         return $this->belongsToMany(User::class, 'users_relationships', 'follower_id', 'following_id')
@@ -49,6 +51,15 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function getIsFollowedAttribute()
+    {
+        return (bool) UserRelationship::where('follower_id', '=', Auth::user()->id)
+            ->where('following_id', '=', $this->getAttribute('id'))
+            ->where('is_accepted', '=', true)
+            ->limit(1)
+            ->count();
     }
 
     public static function checkUserViewPermission(User $user)
