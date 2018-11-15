@@ -105,12 +105,7 @@ class UserTest extends TestCase
                     'first_name',
                     'last_name',
                     'profile_status',
-                    'profile' => [
-                        'file_path',
-                        'thumb_path',
-                        'width',
-                        'height'
-                    ]
+                    'profile'
                 ]
             ],
             'first_page_url',
@@ -145,12 +140,7 @@ class UserTest extends TestCase
                     'first_name',
                     'last_name',
                     'profile_status',
-                    'profile' => [
-                        'file_path',
-                        'thumb_path',
-                        'width',
-                        'height'
-                    ]
+                    'profile'
                 ]
             ],
             'first_page_url',
