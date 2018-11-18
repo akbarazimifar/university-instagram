@@ -37,7 +37,7 @@ Vue.router = new VueRouter({
         }, {
             path: '*',
             name: 'toNotFound',
-            component: require('./components/404.vue')
+            redirect: '/404'
         }
     ]
 });

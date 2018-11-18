@@ -18263,7 +18263,7 @@ Vue.router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
     }, {
         path: '*',
         name: 'toNotFound',
-        component: __webpack_require__("./resources/js/components/404.vue")
+        redirect: '/404'
     }]
 });
 
