@@ -14,6 +14,32 @@ use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username'         => 'required|unique:users',
+            'first_name'       => 'required|string',
+            'last_name'        => 'required|nullable',
+            'email'            => 'required|string|email|unique:users',
+            'password'         => 'required|string',
+            'password_confirm' => 'required|same:password'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+        $success['token'] = $user->createToken()->accessToken;
+        $success['name'] = $user->name;
+        return response()->json(['success' => $success], $this->successStatus);
+    }
+
+    public function logout(Request $request)
+    {
+
+    }
+
     public function search(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -192,7 +218,7 @@ class UserController extends Controller
                 'width'      => $width,
                 'height'     => $height
             ];
-            UserProfile::updateOrCreate(['user_id'    => $user->id],$user_profile_data);
+            UserProfile::updateOrCreate(['user_id' => $user->id], $user_profile_data);
         }
         if ($request->has('password')) {
             $user->password = Hash::make($request->get('password'));

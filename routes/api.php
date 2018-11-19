@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('register', [\App\Http\Controllers\UserController::class, 'register'])->name('user.register');
+
+
 Route::middleware(['auth:api'])->group(function () {
     Route::get('feeds', 'FeedController@homepage')->name('user.feeds');
     Route::get('search', 'UserController@search')->name('user.search');
