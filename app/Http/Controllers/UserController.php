@@ -37,7 +37,9 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-
+        if (Auth::check()) {
+            Auth::user()->OauthAcessToken()->delete();
+        }
     }
 
     public function search(Request $request)

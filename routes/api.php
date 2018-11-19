@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 Route::post('register', [\App\Http\Controllers\UserController::class, 'register'])->name('user.register');
-
+Route::post('logout', [\App\Http\Controllers\UserController::class, 'logout'])->name('user.logout');
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('feeds', 'FeedController@homepage')->name('user.feeds');
