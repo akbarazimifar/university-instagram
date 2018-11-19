@@ -23,6 +23,8 @@
     },
     "dependencies": {
         "@websanova/vue-auth": "^2.21.14-beta",
+        "material-icons": "^0.2.3",
+        "muse-ui": "^3.0.1",
         "vue-axios": "^2.1.4",
         "vue-router": "^3.0.1",
         "vuesax": "^3.7.1",
