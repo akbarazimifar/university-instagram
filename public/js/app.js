@@ -2870,131 +2870,133 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        var _this2 = this;
+  data: function data() {
+    var _this2 = this;
 
-        return {
-            usernameRules: [{
-                validate: function validate(val) {
-                    return !!val;
-                },
-                message: 'لطفا ایمیل را وارد کنید'
-            }, {
-                validate: function validate(val) {
-                    return _this2.validEmail(val);
-                },
-                message: 'ایمیل وارد شده معتبر نمی باشد'
-            }],
-            passwordRules: [{
-                validate: function validate(val) {
-                    return !!val;
-                },
-                message: 'رمز عبور را وارد کنید'
-            }, {
-                validate: function validate(val) {
-                    return val.length >= 8;
-                },
-                message: 'رمز عبور باید بیشتر از 8 کارکتر باشد'
-            }],
-            LoginError: false,
-            isLogingin: false,
-            data: {
-                body: {
-                    username: "asdasdasdas@asdasd.asdas",
-                    password: "asdasdasdasdadas",
-                    grant_type: "password",
-                    client_id: window.client_id,
-                    client_secret: window.client_secret
-                },
-                rememberMe: false,
-                fetchUser: true
-            },
-            errorText: ""
-        };
+    return {
+      usernameRules: [{
+        validate: function validate(val) {
+          return !!val;
+        },
+        message: "لطفا ایمیل را وارد کنید"
+      }, {
+        validate: function validate(val) {
+          return _this2.validEmail(val);
+        },
+        message: "ایمیل وارد شده معتبر نمی باشد"
+      }],
+      passwordRules: [{
+        validate: function validate(val) {
+          return !!val;
+        },
+        message: "رمز عبور را وارد کنید"
+      }, {
+        validate: function validate(val) {
+          return val.length >= 8;
+        },
+        message: "رمز عبور باید بیشتر از 8 کارکتر باشد"
+      }],
+      LoginError: false,
+      isLogingin: false,
+      data: {
+        body: {
+          username: "asdasdasdas@asdasd.asdas",
+          password: "asdasdasdasdadas",
+          grant_type: "password",
+          client_id: window.client_id,
+          client_secret: window.client_secret
+        },
+        rememberMe: false,
+        fetchUser: true
+      },
+      errorText: ""
+    };
+  },
+  mounted: function mounted() {},
+
+  watch: {
+    "data.body.username": function dataBodyUsername(newVal) {
+      if (newVal.length > 0) {
+        $("input[prop='username']").style.direction = "ltr";
+      } else {
+        $("input[prop='username']").style.direction = "rtl";
+      }
     },
-    mounted: function mounted() {},
-
-    watch: {
-        'data.body.username': function dataBodyUsername(newVal) {
-            if (newVal.length > 0) {
-                $("input[prop='username']").style.direction = "ltr";
-            } else {
-                $("input[prop='username']").style.direction = "rtl";
-            }
-        },
-        'data.body.password': function dataBodyPassword(newVal) {
-            if (newVal.length > 0) {
-                $("input[prop='password']").style.direction = "ltr";
-            } else {
-                $("input[prop='password']").style.direction = "rtl";
-            }
-        }
-    },
-    methods: {
-        submit: function submit() {
-            var _this3 = this;
-
-            this.$refs.form.validate().then(function (result) {
-                _this3.LoginError = false;
-                _this3.isLogingin = true;
-                _this3.$auth.login({
-                    data: _this3.data.body,
-                    rememberMe: true,
-                    redirect: "/home",
-                    success: function success() {
-                        this.LoginError = false;
-                        this.isLogingin = false;
-                    },
-                    error: function error(val) {
-                        console.log(JSON.stringify(val.response.data.message));
-                        this.errorText = val.response.data.message;
-                        this.LoginError = true;
-                        this.isLogingin = false;
-                    }
-                });
-            });
-        },
-
-        validEmail: function validEmail(email) {
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(email);
-        },
-        login: function login() {
-            this.LoginError = false;
-            if (!this.validEmail(this.data.body.username)) this.usernameAlert = true;else this.usernameAlert = false;
-            if (this.data.body.password.length === 0) {
-                this.passwordAlert = true;
-                this.passwordAlertText = "رمز عبور خود را وارد کنید";
-            } else {
-                this.passwordAlert = false;
-            }
-            if (this.data.body.password.length < 6) {
-                this.passwordAlert = true;
-                this.passwordAlertText = "رمز عبور باید بیشتر از 6 کاراکتر باشد.";
-            } else {
-                this.passwordAlert = false;
-            }
-            if (this.passwordAlert || this.usernameAlert) return;
-            this.isLogingin = true;
-            var _this = this;
-            setTimeout(function () {
-                _this.$auth.login({
-                    data: _this.data.body,
-                    rememberMe: true,
-                    redirect: "/dashboard"
-                }).then(function (data) {
-                    /*_this.isLogingin = false;
-                                  _this.axios.get("api/user/self").then(function (data) {
-                                      console.log(JSON.stringify(data.data));
-                                  }).catch(function (data) {
-                                   });*/
-                }, function (res) {
-                    _this.isLogingin = false;
-                    _this.LoginError = true;
-                });
-            }, 500);
-        }
+    "data.body.password": function dataBodyPassword(newVal) {
+      if (newVal.length > 0) {
+        $("input[prop='password']").style.direction = "ltr";
+      } else {
+        $("input[prop='password']").style.direction = "rtl";
+      }
     }
+  },
+  methods: {
+    submit: function submit() {
+      var _this3 = this;
+
+      this.$refs.form.validate().then(function (result) {
+        if (result) {
+          _this3.LoginError = false;
+          _this3.isLogingin = true;
+          _this3.$auth.login({
+            data: _this3.data.body,
+            rememberMe: true,
+            redirect: "/home",
+            success: function success() {
+              this.LoginError = false;
+              this.isLogingin = false;
+            },
+            error: function error(val) {
+              console.log(JSON.stringify(val.response.data.message));
+              this.errorText = val.response.data.message;
+              this.LoginError = true;
+              this.isLogingin = false;
+            }
+          });
+        }
+      });
+    },
+
+    validEmail: function validEmail(email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+    login: function login() {
+      this.LoginError = false;
+      if (!this.validEmail(this.data.body.username)) this.usernameAlert = true;else this.usernameAlert = false;
+      if (this.data.body.password.length === 0) {
+        this.passwordAlert = true;
+        this.passwordAlertText = "رمز عبور خود را وارد کنید";
+      } else {
+        this.passwordAlert = false;
+      }
+      if (this.data.body.password.length < 6) {
+        this.passwordAlert = true;
+        this.passwordAlertText = "رمز عبور باید بیشتر از 6 کاراکتر باشد.";
+      } else {
+        this.passwordAlert = false;
+      }
+      if (this.passwordAlert || this.usernameAlert) return;
+      this.isLogingin = true;
+      var _this = this;
+      setTimeout(function () {
+        _this.$auth.login({
+          data: _this.data.body,
+          rememberMe: true,
+          redirect: "/dashboard"
+        }).then(function (data) {
+          /*_this.isLogingin = false;
+                                          _this.axios.get("api/user/self").then(function (data) {
+                                              console.log(JSON.stringify(data.data));
+                                          }).catch(function (data) {
+                                            });*/
+        }, function (res) {
+          _this.isLogingin = false;
+          _this.LoginError = true;
+        });
+      }, 500);
+    }
+  }
 });
 
 /***/ }),
@@ -3004,6 +3006,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3258,7 +3266,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\n    margin-top: 50px;\n}\n\n", ""]);
+exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
 
 // exports
 
@@ -17641,6 +17649,14 @@ var render = function() {
                                   on: { click: _vm.submit }
                                 },
                                 [_vm._v("ورود")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "router-link",
+                                {
+                                  attrs: { to: "/register", tag: "mu-button" }
+                                },
+                                [_vm._v("ثبت نام")]
                               )
                             ],
                             1
@@ -17737,7 +17753,7 @@ var render = function() {
             "mu-col",
             {
               staticClass: "maginAuto",
-              attrs: { span: "12", sm: "12", md: "8", lg: "6", xl: "4" }
+              attrs: { span: "12", sm: "12", md: "12", lg: "8", xl: "8" }
             },
             [
               _c(
@@ -17764,152 +17780,213 @@ var render = function() {
                         },
                         [
                           _c(
-                            "mu-form-item",
-                            {
-                              attrs: {
-                                label: "نام",
-                                prop: "first_name",
-                                rules: _vm.nameRules
-                              }
-                            },
+                            "mu-row",
+                            { attrs: { gutter: "" } },
                             [
-                              _c("mu-text-field", {
-                                attrs: { prop: "first_name" },
-                                model: {
-                                  value: _vm.data.body.first_name,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.data.body, "first_name", $$v)
-                                  },
-                                  expression: "data.body.first_name"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "mu-form-item",
-                            {
-                              attrs: {
-                                label: "نام خانوادگی",
-                                prop: "last_name",
-                                rules: _vm.nameRules
-                              }
-                            },
-                            [
-                              _c("mu-text-field", {
-                                attrs: { prop: "last_name" },
-                                model: {
-                                  value: _vm.data.body.last_name,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.data.body, "last_name", $$v)
-                                  },
-                                  expression: "data.body.last_name"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "mu-form-item",
-                            {
-                              attrs: {
-                                label: "نام کاربری",
-                                prop: "username",
-                                rules: _vm.nameRules
-                              }
-                            },
-                            [
-                              _c("mu-text-field", {
-                                attrs: { prop: "username" },
-                                model: {
-                                  value: _vm.data.body.username,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.data.body, "username", $$v)
-                                  },
-                                  expression: "data.body.username"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "mu-form-item",
-                            {
-                              attrs: {
-                                label: "ایمیل",
-                                prop: "email",
-                                rules: _vm.usernameRules
-                              }
-                            },
-                            [
-                              _c("mu-text-field", {
-                                attrs: { prop: "email" },
-                                model: {
-                                  value: _vm.data.body.email,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.data.body, "email", $$v)
-                                  },
-                                  expression: "data.body.email"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "mu-form-item",
-                            {
-                              attrs: {
-                                label: "رمزعبور",
-                                prop: "password",
-                                rules: _vm.passwordRules
-                              }
-                            },
-                            [
-                              _c("mu-text-field", {
-                                attrs: { type: "password", prop: "password" },
-                                model: {
-                                  value: _vm.data.body.password,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.data.body, "password", $$v)
-                                  },
-                                  expression: "data.body.password"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "mu-form-item",
-                            {
-                              attrs: {
-                                label: "تکرار رمزعبور",
-                                prop: "password_confirm",
-                                rules: _vm.password_confirmRules
-                              }
-                            },
-                            [
-                              _c("mu-text-field", {
-                                attrs: {
-                                  type: "password",
-                                  prop: "password_confirm"
+                              _c(
+                                "mu-col",
+                                {
+                                  attrs: {
+                                    span: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "6",
+                                    xl: "6"
+                                  }
                                 },
-                                model: {
-                                  value: _vm.data.body.password_confirm,
-                                  callback: function($$v) {
-                                    _vm.$set(
-                                      _vm.data.body,
-                                      "password_confirm",
-                                      $$v
-                                    )
-                                  },
-                                  expression: "data.body.password_confirm"
-                                }
-                              })
+                                [
+                                  _c(
+                                    "mu-form-item",
+                                    {
+                                      attrs: {
+                                        label: "نام",
+                                        prop: "first_name",
+                                        rules: _vm.nameRules
+                                      }
+                                    },
+                                    [
+                                      _c("mu-text-field", {
+                                        attrs: { prop: "first_name" },
+                                        model: {
+                                          value: _vm.data.body.first_name,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.data.body,
+                                              "first_name",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "data.body.first_name"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "mu-form-item",
+                                    {
+                                      attrs: {
+                                        label: "نام خانوادگی",
+                                        prop: "last_name",
+                                        rules: _vm.nameRules
+                                      }
+                                    },
+                                    [
+                                      _c("mu-text-field", {
+                                        attrs: { prop: "last_name" },
+                                        model: {
+                                          value: _vm.data.body.last_name,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.data.body,
+                                              "last_name",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "data.body.last_name"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "mu-form-item",
+                                    {
+                                      attrs: {
+                                        label: "نام کاربری",
+                                        prop: "username",
+                                        rules: _vm.nameRules
+                                      }
+                                    },
+                                    [
+                                      _c("mu-text-field", {
+                                        attrs: { prop: "username" },
+                                        model: {
+                                          value: _vm.data.body.username,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.data.body,
+                                              "username",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "data.body.username"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "mu-col",
+                                {
+                                  attrs: {
+                                    span: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "6",
+                                    xl: "6"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "mu-form-item",
+                                    {
+                                      attrs: {
+                                        label: "ایمیل",
+                                        prop: "email",
+                                        rules: _vm.usernameRules
+                                      }
+                                    },
+                                    [
+                                      _c("mu-text-field", {
+                                        attrs: { prop: "email" },
+                                        model: {
+                                          value: _vm.data.body.email,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.data.body,
+                                              "email",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "data.body.email"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "mu-form-item",
+                                    {
+                                      attrs: {
+                                        label: "رمزعبور",
+                                        prop: "password",
+                                        rules: _vm.passwordRules
+                                      }
+                                    },
+                                    [
+                                      _c("mu-text-field", {
+                                        attrs: {
+                                          type: "password",
+                                          prop: "password"
+                                        },
+                                        model: {
+                                          value: _vm.data.body.password,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.data.body,
+                                              "password",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "data.body.password"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "mu-form-item",
+                                    {
+                                      attrs: {
+                                        label: "تکرار رمزعبور",
+                                        prop: "password_confirm",
+                                        rules: _vm.password_confirmRules
+                                      }
+                                    },
+                                    [
+                                      _c("mu-text-field", {
+                                        attrs: {
+                                          type: "password",
+                                          prop: "password_confirm"
+                                        },
+                                        model: {
+                                          value: _vm.data.body.password_confirm,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.data.body,
+                                              "password_confirm",
+                                              $$v
+                                            )
+                                          },
+                                          expression:
+                                            "data.body.password_confirm"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
                             ],
                             1
                           ),
