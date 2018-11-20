@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
+use Laravel\Passport\Passport;
 
 class UserController extends Controller
 {
@@ -24,21 +25,28 @@ class UserController extends Controller
             'password'         => 'required|string',
             'password_confirm' => 'required|same:password'
         ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
+        if ($validator->fails()) return response(['error' => $validator->errors()], 401);
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] = $user->createToken()->accessToken;
-        $success['name'] = $user->name;
-        return response()->json(['success' => $success], $this->successStatus);
+        try {
+            $user = User::create($input);
+            Passport::actingAs($user);
+            return response([
+                'user'  => $user,
+                'token' => $user->createToken(config('app.name'))->accessToken
+            ], 200);
+        } catch (\Exception $e) {
+            return response(['error' => 'Could not create new user.', 'description' => $e->getMessage()], 500);
+        }
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        if (Auth::check()) {
-            Auth::user()->OauthAcessToken()->delete();
+        try {
+            if (Auth::check()) Auth::user()->OauthAcessToken()->delete();
+            return response(['ok' => true], 200);
+        } catch (\Exception $e) {
+            return response(['ok' => false, 'description' => $e->getMessage()], 500);
         }
     }
 

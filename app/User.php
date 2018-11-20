@@ -55,7 +55,7 @@ class User extends Authenticatable
 
     public function getIsFollowedAttribute()
     {
-        return (bool) UserRelationship::where('follower_id', '=', Auth::user()->id)
+        return (bool)UserRelationship::where('follower_id', '=', Auth::user()->id)
             ->where('following_id', '=', $this->getAttribute('id'))
             ->where('is_accepted', '=', true)
             ->limit(1)
@@ -81,7 +81,8 @@ class User extends Authenticatable
         }
     }
 
-    public function AauthAcessToken(){
-        return $this->hasMany('\App\OauthAccessToken');
+    public function OauthAcessToken()
+    {
+        return $this->hasMany(OauthAccessToken::class);
     }
 }

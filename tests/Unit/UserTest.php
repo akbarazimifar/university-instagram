@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\User;
 use App\UserRelationship;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,9 +15,40 @@ class UserTest extends TestCase
 {
     private static $user;
 
-    public function testSearch()
+    public function testRegister()
+    {
+        $response = $this->call('post', route('user.register'), [
+            'username'         => 'test____test_' . rand(0, 20),
+            'first_name'       => 'test',
+            'last_name'        => 'test',
+            'password'         => '123456',
+            'password_confirm' => '123456',
+            'email'            => 'a@a' . rand(0, 20) . '.com'
+        ]);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'user' => [
+                'id',
+                'username',
+                'first_name',
+                'last_name',
+            ],
+            'token'
+        ]);
+        User::findOrFail(json_decode($response->getContent())->user->id)->delete();
+    }
+
+    public function testLogout()
     {
         self::$user = User::first();
+        Passport::actingAs(self::$user);
+        $response = $this->call('post', route('user.logout'));
+        $response->assertStatus(200);
+        $response->assertJson(['ok' => true]);
+    }
+
+    public function testSearch()
+    {
         Passport::actingAs(self::$user);
         $response = $this->call('get', Route('user.search', ['query' => self::$user->username]));
         $response->assertStatus(200);
