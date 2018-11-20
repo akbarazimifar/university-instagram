@@ -15,6 +15,11 @@ use Laravel\Passport\Passport;
 
 class UserController extends Controller
 {
+    public function self()
+    {
+        return Auth::user();
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
