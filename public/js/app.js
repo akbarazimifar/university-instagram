@@ -3076,6 +3076,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -18098,6 +18099,12 @@ var render = function() {
                                   on: { click: _vm.submit }
                                 },
                                 [_vm._v("ثبت نام")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "router-link",
+                                { attrs: { to: "/login", tag: "mu-button" } },
+                                [_vm._v("صفحه ورود")]
                               )
                             ],
                             1

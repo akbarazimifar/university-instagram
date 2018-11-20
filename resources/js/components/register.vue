@@ -55,6 +55,7 @@
                             </transition>
                             <mu-form-item>
                                 <mu-button :disabled="isRegistering && isLogingin" color="primary" @click="submit">ثبت نام</mu-button>
+                                <router-link to="/login" tag="mu-button">صفحه ورود</router-link>
                             </mu-form-item>
                         </mu-form>
                     </mu-card-text>
