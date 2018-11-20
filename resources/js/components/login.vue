@@ -63,8 +63,8 @@ export default {
       isLogingin: false,
       data: {
         body: {
-          username: "asdasdasdas@asdasd.asdas",
-          password: "asdasdasdasdadas",
+          username: "",
+          password: "",
           grant_type: "password",
           client_id: window.client_id,
           client_secret: window.client_secret

@@ -2900,8 +2900,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       isLogingin: false,
       data: {
         body: {
-          username: "asdasdasdas@asdasd.asdas",
-          password: "asdasdasdasdadas",
+          username: "",
+          password: "",
           grant_type: "password",
           client_id: window.client_id,
           client_secret: window.client_secret
@@ -3088,11 +3088,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       data: {
         body: {
           email: "",
-          password: "asdasdasd",
           last_name: "",
           first_name: "",
           username: "",
-          password_confirm: "asdasdasd",
+          password: "",
+          password_confirm: "",
           grant_type: "password",
           client_id: window.client_id,
           client_secret: window.client_secret
@@ -18097,7 +18097,7 @@ var render = function() {
                                   },
                                   on: { click: _vm.submit }
                                 },
-                                [_vm._v("ورود")]
+                                [_vm._v("ثبت نام")]
                               )
                             ],
                             1

@@ -54,7 +54,7 @@
                                 </mu-form-item>
                             </transition>
                             <mu-form-item>
-                                <mu-button :disabled="isRegistering && isLogingin" color="primary" @click="submit">ورود</mu-button>
+                                <mu-button :disabled="isRegistering && isLogingin" color="primary" @click="submit">ثبت نام</mu-button>
                             </mu-form-item>
                         </mu-form>
                     </mu-card-text>
@@ -78,11 +78,11 @@ export default {
       data: {
         body: {
           email: "",
-          password: "asdasdasd",
           last_name: "",
           first_name: "",
           username: "",
-          password_confirm: "asdasdasd",
+          password: "",
+          password_confirm: "",
           grant_type: "password",
           client_id: window.client_id,
           client_secret: window.client_secret
