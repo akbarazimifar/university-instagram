@@ -1,14 +1,61 @@
+@import "~muse-ui/dist/muse-ui.css";
+@import '~material-icons/iconfont/material-icons.scss';
+font-face { 
+  font-family: "IranSans";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/IRANSansWeb(FaNum).woff") format("woff")
+}
 
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@font-face {
+  font-family: "IranSans-Light";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/IRANSansWeb(FaNum)_Light.woff") format("woff")
+}
 
-// Variables
-@import 'variables';
+@font-face {
+  font-family: "IranSans-Medium";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/IRANSansWeb(FaNum)_Medium.woff") format("woff")
+}
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@font-face {
+  font-family: "IranSans-Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/IRANSansWeb(FaNum)_Bold.woff") format("woff")
+}
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+@font-face {
+  font-family: "IranSans-Dn";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/iransansdn.woff2") format("woff2")
+}
+body{
+  background-color: #FAFCFF;
+}
+*{
+  margin : 0;
+  padding : 0;
+}
+.rtl{
+  direction: rtl;
+  font-family: IranSans-Light;
+}
+.slideDown-enter-active, .slideDown-leave-active {
+  height:auto;
+  max-height:100px;
+  transition:all 0.2s ease-out;
+}
+.slideDown-group-enter-active, .slideDown-group-leave-active {
+  height:auto;
+  max-height:100px;
+  transition:all 0.2s ease-out;
+}
+.maginAuto{
+  margin-left: auto;
+  margin-right: auto
 }
