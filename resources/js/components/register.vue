@@ -27,12 +27,28 @@
                             <transition name="slideDown">
                                 <mu-form-item v-if="registerError && errorText.length > 0">
                                     <mu-alert color="error">
-                                        {{errorText}}
+                                        <ul>
+                                          <li v-for="i in errorText">{{i}}</li>
+                                        </ul>
+                                    </mu-alert>
+                                </mu-form-item>
+                                </transition>
+                                <transition name="slideDown">
+                                <mu-form-item v-if="registerSuccess && LoginError==false">
+                                    <mu-alert color="success">
+                                        <span>عضویت شما با موفقیت انجام شد. در حال ورود خودکار...</span>
+                                    </mu-alert>
+                                </mu-form-item>
+                            </transition>
+                            <transition name="slideDown">
+                                <mu-form-item v-if="LoginError">
+                                    <mu-alert color="error">
+                                        <span>مشکلی در ورود خود کار به وجود آمده است. برای ورود به   </span> <router-link to="/login">این صفحه </router-link> <span>  مراجعه کنید </span>
                                     </mu-alert>
                                 </mu-form-item>
                             </transition>
                             <mu-form-item>
-                                <mu-button :disabled="isRegistering" color="primary" @click="submit">ورود</mu-button>
+                                <mu-button :disabled="isRegistering && isLogingin" color="primary" @click="submit">ورود</mu-button>
                             </mu-form-item>
                         </mu-form>
                     </mu-card-text>
@@ -52,20 +68,25 @@ export default {
     return {
       registerError: false,
       isRegistering: false,
+      registerSuccess: false,
       data: {
         body: {
           email: "",
-          password: "",
+          password: "asdasdasd",
           last_name: "",
           first_name: "",
           username: "",
-          password_confirm: "",
-          grant_type: "password"
+          password_confirm: "asdasdasd",
+          grant_type: "password",
+          client_id: window.client_id,
+          client_secret: window.client_secret
         },
         rememberMe: false,
         fetchUser: true
       },
-      errorText: "",
+      LoginError : false,
+      isLogingin : false,
+      errorText: [],
       nameRules: [
         {
           validate: val => !!val,
@@ -137,20 +158,53 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.$refs.form.validate());
-      this.$refs.form.validate().then((result) =>{
-        this.LoginError = false;
-        this.isLogingin = true;
-        let _this = this;
-        Vue.axios
-          .post("/api/register", this.data.body)
-          .then(function(data) {
-            console.log(data);
-          })
-          .catch(function(res) {
-            _this.registerError = true;
-            console.log(res);
+      this.$refs.form.validate().then(result => {
+        if (result) {
+          this.registerError = false;
+          this.isRegistering = true;
+          this.registerSuccess = false;
+          let _this = this;
+          this.$auth.register({
+            data: this.data.body,
+            success: function(data) {
+              _this.registerSuccess = true;
+              _this.isRegistering = false;
+              setTimeout(function() {
+                _this.isLogingin = true;
+                let loginArr = _this.data.body;
+                loginArr["username"] = _this.data.body.email;
+                _this.$auth.login({
+                  data: _this.data.body,
+                  rememberMe: true,
+                  redirect: "/home",
+                  success: function() {
+                    _this.LoginError = false;
+                    _this.isLogingin = false;
+                  },
+                  error: function(val) {
+                    _this.LoginError = true;
+                    _this.isLogingin = false;
+                  }
+                });
+              }, 2000);
+            },
+            error: function(res) {
+              _this.registerError = true;
+              console.log(res.response.data);
+              let errorArr = [];
+              Object.keys(res.response.data.error).forEach(function(key) {
+                Object.keys(res.response.data.error[key]).forEach(function(
+                  index
+                ) {
+                  errorArr.push(res.response.data.error[key][index]);
+                });
+              });
+              _this.isRegistering = false;
+              _this.errorText = errorArr;
+            },
+            rememberMe: true
           });
+        }
       });
     },
     validEmail: function(email) {

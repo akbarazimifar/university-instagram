@@ -3052,6 +3052,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3060,20 +3076,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
       registerError: false,
       isRegistering: false,
+      registerSuccess: false,
       data: {
         body: {
           email: "",
-          password: "",
+          password: "asdasdasd",
           last_name: "",
           first_name: "",
           username: "",
-          password_confirm: "",
-          grant_type: "password"
+          password_confirm: "asdasdasd",
+          grant_type: "password",
+          client_id: window.client_id,
+          client_secret: window.client_secret
         },
         rememberMe: false,
         fetchUser: true
       },
-      errorText: "",
+      LoginError: false,
+      isLogingin: false,
+      errorText: [],
       nameRules: [{
         validate: function validate(val) {
           return !!val;
@@ -3151,17 +3172,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     submit: function submit() {
       var _this3 = this;
 
-      console.log(this.$refs.form.validate());
       this.$refs.form.validate().then(function (result) {
-        _this3.LoginError = false;
-        _this3.isLogingin = true;
-        var _this = _this3;
-        Vue.axios.post("/api/register", _this3.data.body).then(function (data) {
-          console.log(data);
-        }).catch(function (res) {
-          _this.registerError = true;
-          console.log(res);
-        });
+        if (result) {
+          _this3.registerError = false;
+          _this3.isRegistering = true;
+          _this3.registerSuccess = false;
+          var _this = _this3;
+          _this3.$auth.register({
+            data: _this3.data.body,
+            success: function success(data) {
+              _this.registerSuccess = true;
+              _this.isRegistering = false;
+              setTimeout(function () {
+                _this.isLogingin = true;
+                var loginArr = _this.data.body;
+                loginArr["username"] = _this.data.body.email;
+                _this.$auth.login({
+                  data: _this.data.body,
+                  rememberMe: true,
+                  redirect: "/home",
+                  success: function success() {
+                    _this.LoginError = false;
+                    _this.isLogingin = false;
+                  },
+                  error: function error(val) {
+                    _this.LoginError = true;
+                    _this.isLogingin = false;
+                  }
+                });
+              }, 2000);
+            },
+            error: function error(res) {
+              _this.registerError = true;
+              console.log(res.response.data);
+              var errorArr = [];
+              Object.keys(res.response.data.error).forEach(function (key) {
+                Object.keys(res.response.data.error[key]).forEach(function (index) {
+                  errorArr.push(res.response.data.error[key][index]);
+                });
+              });
+              _this.isRegistering = false;
+              _this.errorText = errorArr;
+            },
+            rememberMe: true
+          });
+        }
       });
     },
 
@@ -17871,12 +17926,78 @@ var render = function() {
                                         "mu-alert",
                                         { attrs: { color: "error" } },
                                         [
-                                          _vm._v(
-                                            "\n                                    " +
-                                              _vm._s(_vm.errorText) +
-                                              "\n                                "
+                                          _c(
+                                            "ul",
+                                            _vm._l(_vm.errorText, function(i) {
+                                              return _c("li", [
+                                                _vm._v(_vm._s(i))
+                                              ])
+                                            })
                                           )
                                         ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                : _vm._e()
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "transition",
+                            { attrs: { name: "slideDown" } },
+                            [
+                              _vm.registerSuccess && _vm.LoginError == false
+                                ? _c(
+                                    "mu-form-item",
+                                    [
+                                      _c(
+                                        "mu-alert",
+                                        { attrs: { color: "success" } },
+                                        [
+                                          _c("span", [
+                                            _vm._v(
+                                              "عضویت شما با موفقیت انجام شد. در حال ورود خودکار..."
+                                            )
+                                          ])
+                                        ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                : _vm._e()
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "transition",
+                            { attrs: { name: "slideDown" } },
+                            [
+                              _vm.LoginError
+                                ? _c(
+                                    "mu-form-item",
+                                    [
+                                      _c(
+                                        "mu-alert",
+                                        { attrs: { color: "error" } },
+                                        [
+                                          _c("span", [
+                                            _vm._v(
+                                              "مشکلی در ورود خود کار به وجود آمده است. برای ورود به   "
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c(
+                                            "router-link",
+                                            { attrs: { to: "/login" } },
+                                            [_vm._v("این صفحه ")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("span", [_vm._v("  مراجعه کنید ")])
+                                        ],
+                                        1
                                       )
                                     ],
                                     1
@@ -17893,7 +18014,8 @@ var render = function() {
                                 "mu-button",
                                 {
                                   attrs: {
-                                    disabled: _vm.isRegistering,
+                                    disabled:
+                                      _vm.isRegistering && _vm.isLogingin,
                                     color: "primary"
                                   },
                                   on: { click: _vm.submit }
@@ -32932,9 +33054,10 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
     http: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/http/axios.1.x.js"),
     router: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/router/vue-router.2.x.js"),
     //rolesVar: 'permissions',
-    loginData: { url: '/oauth/token', method: 'POST', redirect: '/dashboard', fetchUser: false },
+    loginData: { url: '/oauth/token', method: 'POST', redirect: '/home', fetchUser: false },
     fetchData: { enabled: false },
     //logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
+    registerData: { url: '/api/register', method: 'POST', redirect: false },
     refreshData: { url: '/oauth/token/refresh ', method: 'POST', enabled: false, interval: 15 },
     forbiddenRedirect: { path: '/404' },
     notFoundRedirect: { path: '/404' },
