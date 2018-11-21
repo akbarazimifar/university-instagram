@@ -17,7 +17,9 @@ class UserController extends Controller
 {
     public function self()
     {
-        return Auth::user();
+        if (Auth::check())
+            return Auth::user();
+        return response(['ok' => false, 'description' => 'You are not logged in.'], 403);
     }
 
     public function register(Request $request)
