@@ -1,5 +1,5 @@
 window.client_id = 2;
-window.client_secret = 'M9LOZCLDZQB7uliwDoNYmRDSJ0PwrRtBKzVulRtw';
+window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo';
 window.Vue = require('vue');
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
@@ -82,8 +82,8 @@ Vue.use(require('@websanova/vue-auth'), {
     },
     http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
     router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-    loginData: {url: '/oauth/token', method: 'POST', redirect: '/home', fetchUser: true},
-    fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
+    loginData: {url: '/oauth/token', method: 'POST', redirect: '/home', fetchUser: false},
+    //fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
     //logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
     registerData: {url: '/api/register', method: 'POST'},
     refreshData: {url: '/oauth/token', method: 'POST', enabled: true, interval: 15},

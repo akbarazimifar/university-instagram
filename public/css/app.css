@@ -149,3 +149,55 @@ body {
   margin-right: auto;
 }
 
+.sidebar {
+  background-image: url("/img/3.jpg");
+  height: 100vh;
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.container {
+  background-color: #FAFCFF;
+  height: 100vh;
+}
+
+.sidebar {
+  font-family: "IranSans-Light";
+}
+
+.profileSelction {
+  width: 200px;
+  margin: 30px auto;
+  text-align: center;
+  font-family: "IranSans-Light";
+  font-size: 13px;
+}
+
+.profileSelction img {
+  border-radius: 100%;
+  margin: 10px auto;
+  width: 80px;
+  height: 80px;
+}
+
+.sidebar .mu-paper-round {
+  background-color: transparent;
+  -webkit-box-shadow: unset;
+          box-shadow: unset;
+}
+
+.sidebar .mu-item-title {
+  text-align: right;
+}
+
+.sidebar .mu-item {
+  width: 220px;
+  margin: 0px auto;
+}
+
+.sidebar li[active=true] .mu-item-title,
+.sidebar li[active=true] .mu-item-action {
+  color: #0d47a1;
+}
+

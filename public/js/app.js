@@ -2784,6 +2784,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     created: function created() {},
@@ -2900,8 +2938,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       isLogingin: false,
       data: {
         body: {
-          username: "",
-          password: "",
+          username: "asd@asd.asd",
+          password: "asdasdasd",
           grant_type: "password",
           client_id: window.client_id,
           client_secret: window.client_secret
@@ -17700,7 +17738,121 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\n    asdasd\n")])
+  return _c(
+    "mu-row",
+    [
+      _c(
+        "mu-col",
+        {
+          staticClass: "container",
+          attrs: { span: "12", sm: "12", md: "12", lg: "9", xl: "9" }
+        },
+        [_vm._v("\n        sdas\n    ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-col",
+        {
+          staticClass: "sidebar",
+          attrs: { span: "12", sm: "0", md: "0", lg: "3", xl: "3" }
+        },
+        [
+          _c("div", { staticClass: "profileSelction" }, [
+            _c("img", { attrs: { src: "/img/profile.jpg" } }),
+            _vm._v(" "),
+            _c("h2", [_vm._v("هومن حسن زاده")])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "options" },
+            [
+              _c(
+                "mu-paper",
+                { attrs: { "z-depth": 1 } },
+                [
+                  _c(
+                    "mu-list",
+                    [
+                      _c(
+                        "mu-list-item",
+                        { attrs: { button: "", ripple: true, active: true } },
+                        [
+                          _c("mu-list-item-title", [
+                            _vm._v("جدیدترین رسانه ها")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item-action",
+                            [_c("mu-icon", { attrs: { value: "home" } })],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "mu-list-item",
+                        { attrs: { button: "", ripple: true } },
+                        [
+                          _c("mu-list-item-title", [_vm._v("جستجو")]),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item-action",
+                            [_c("mu-icon", { attrs: { value: "search" } })],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "mu-list-item",
+                        { attrs: { button: "", ripple: true } },
+                        [
+                          _c("mu-list-item-title", [_vm._v("آپلود رسانه")]),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item-action",
+                            [
+                              _c("mu-icon", {
+                                attrs: { value: "cloud_upload" }
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "mu-list-item",
+                        { attrs: { button: "", ripple: true } },
+                        [
+                          _c("mu-list-item-title", [_vm._v("پروفایل")]),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item-action",
+                            [_c("mu-icon", { attrs: { value: "person" } })],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -33058,7 +33210,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__("./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
 window.client_id = 2;
-window.client_secret = 'M9LOZCLDZQB7uliwDoNYmRDSJ0PwrRtBKzVulRtw';
+window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo';
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 
@@ -33137,8 +33289,8 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
     },
     http: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/http/axios.1.x.js"),
     router: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/router/vue-router.2.x.js"),
-    loginData: { url: '/oauth/token', method: 'POST', redirect: '/home', fetchUser: true },
-    fetchData: { url: '/api/user/self', method: 'GET', enabled: true },
+    loginData: { url: '/oauth/token', method: 'POST', redirect: '/home', fetchUser: false },
+    //fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
     //logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
     registerData: { url: '/api/register', method: 'POST' },
     refreshData: { url: '/oauth/token', method: 'POST', enabled: true, interval: 15 },
