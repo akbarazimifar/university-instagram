@@ -1,0 +1,37 @@
+<template>
+  <div class="feedPosts">
+    <mu-card v-for="f in feeds">
+      <mu-card-header :title="f.user.first_name+ ' '+f.user.last_name">
+        <mu-avatar slot="avatar">
+          <img src="f.user.profile">
+        </mu-avatar>
+      </mu-card-header>
+      <mu-card-media>
+        <img src="f.file_path">
+      </mu-card-media>
+      <mu-card-text>{{f.caption}}</mu-card-text>
+      <mu-card-actions>
+        <mu-button flat>like</mu-button>
+      </mu-card-actions>
+    </mu-card>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      feeds: []
+    };
+  },
+  mounted() {
+    let _this = this;
+    if (this.$auth.check()) {
+      Vue.axios.get("/api/feeds").then(function(data) {
+        console.log(data.data.data);
+        _this.feeds = data.data.data;
+      });
+    }
+  }
+};
+</script>
+

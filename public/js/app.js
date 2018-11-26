@@ -2822,11 +2822,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            loaded: false
+        };
+    },
     created: function created() {},
 
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        console.log(this.$auth.check());
+        if (!this.$auth.check()) {
+            Vue.router.push("login");
+        } else {
+            Vue.router.push("feeds");
+            this.loaded = true;
+        }
+    },
     methods: {
         logout: function logout() {
             this.$auth.logout({
@@ -2839,27 +2854,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     }
 
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/js/components/home.vue":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        if (!this.$auth.check()) Vue.router.push("login");else {
-            Vue.router.push("dashboard");
-        }
-    }
 });
 
 /***/ }),
@@ -2979,7 +2973,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           _this3.$auth.login({
             data: _this3.data.body,
             rememberMe: true,
-            redirect: "/home",
+            redirect: "/feeds",
             success: function success() {
               this.LoginError = false;
               this.isLogingin = false;
@@ -3033,6 +3027,49 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           _this.LoginError = true;
         });
       }, 500);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/js/components/pages/timeline.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      feeds: []
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+    if (this.$auth.check()) {
+      Vue.axios.get("/api/feeds").then(function (data) {
+        console.log(data.data.data);
+        _this.feeds = data.data.data;
+      });
     }
   }
 });
@@ -3237,7 +3274,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this.$auth.login({
                   data: _this.data.body,
                   rememberMe: true,
-                  redirect: "/home",
+                  redirect: "/feeds",
                   success: function success() {
                     _this.LoginError = false;
                     _this.isLogingin = false;
@@ -17555,6 +17592,58 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-16687b37\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/pages/timeline.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "feedPosts" },
+    _vm._l(_vm.feeds, function(f) {
+      return _c(
+        "mu-card",
+        [
+          _c(
+            "mu-card-header",
+            { attrs: { title: f.user.first_name + " " + f.user.last_name } },
+            [
+              _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
+                _c("img", { attrs: { src: "f.user.profile" } })
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("mu-card-media", [_c("img", { attrs: { src: "f.file_path" } })]),
+          _vm._v(" "),
+          _c("mu-card-text", [_vm._v(_vm._s(f.caption))]),
+          _vm._v(" "),
+          _c(
+            "mu-card-actions",
+            [_c("mu-button", { attrs: { flat: "" } }, [_vm._v("like")])],
+            1
+          )
+        ],
+        1
+      )
+    })
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-16687b37", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-172b28a4\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/login.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17738,102 +17827,109 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "mu-row",
-    [
-      _c(
-        "mu-col",
-        {
-          staticClass: "container",
-          attrs: { span: "12", sm: "12", md: "12", lg: "9", xl: "9" }
-        },
-        [_vm._v("\n        sdas\n    ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "mu-col",
-        {
-          staticClass: "sidebar",
-          attrs: { span: "12", sm: "0", md: "0", lg: "3", xl: "3" }
-        },
+  return _vm.loaded
+    ? _c(
+        "mu-row",
         [
-          _c("div", { staticClass: "profileSelction" }, [
-            _c("img", { attrs: { src: "/img/profile.jpg" } }),
-            _vm._v(" "),
-            _c("h2", [_vm._v("هومن حسن زاده")])
-          ]),
+          _c(
+            "mu-col",
+            {
+              staticClass: "container",
+              attrs: { span: "12", sm: "12", md: "12", lg: "9", xl: "9" }
+            },
+            [_c("router-view")],
+            1
+          ),
           _vm._v(" "),
           _c(
-            "div",
-            { staticClass: "options" },
+            "mu-col",
+            {
+              staticClass: "sidebar",
+              attrs: { span: "12", sm: "0", md: "0", lg: "3", xl: "3" }
+            },
             [
+              _c("div", { staticClass: "profileSelction" }, [
+                _c("img", { attrs: { src: "/img/profile.jpg" } }),
+                _vm._v(" "),
+                _c("h2", [_vm._v("هومن حسن زاده")])
+              ]),
+              _vm._v(" "),
               _c(
-                "mu-paper",
-                { attrs: { "z-depth": 1 } },
+                "div",
+                { staticClass: "options" },
                 [
                   _c(
-                    "mu-list",
+                    "mu-paper",
+                    { attrs: { "z-depth": 1 } },
                     [
                       _c(
-                        "mu-list-item",
-                        { attrs: { button: "", ripple: true, active: true } },
+                        "mu-list",
                         [
-                          _c("mu-list-item-title", [
-                            _vm._v("جدیدترین رسانه ها")
-                          ]),
-                          _vm._v(" "),
                           _c(
-                            "mu-list-item-action",
-                            [_c("mu-icon", { attrs: { value: "home" } })],
-                            1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "mu-list-item",
-                        { attrs: { button: "", ripple: true } },
-                        [
-                          _c("mu-list-item-title", [_vm._v("جستجو")]),
-                          _vm._v(" "),
-                          _c(
-                            "mu-list-item-action",
-                            [_c("mu-icon", { attrs: { value: "search" } })],
-                            1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "mu-list-item",
-                        { attrs: { button: "", ripple: true } },
-                        [
-                          _c("mu-list-item-title", [_vm._v("آپلود رسانه")]),
-                          _vm._v(" "),
-                          _c(
-                            "mu-list-item-action",
+                            "mu-list-item",
+                            {
+                              attrs: { button: "", ripple: true, active: true }
+                            },
                             [
-                              _c("mu-icon", {
-                                attrs: { value: "cloud_upload" }
-                              })
+                              _c("mu-list-item-title", [
+                                _vm._v("جدیدترین رسانه ها")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "mu-list-item-action",
+                                [_c("mu-icon", { attrs: { value: "home" } })],
+                                1
+                              )
                             ],
                             1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "mu-list-item",
-                        { attrs: { button: "", ripple: true } },
-                        [
-                          _c("mu-list-item-title", [_vm._v("پروفایل")]),
+                          ),
                           _vm._v(" "),
                           _c(
-                            "mu-list-item-action",
-                            [_c("mu-icon", { attrs: { value: "person" } })],
+                            "mu-list-item",
+                            { attrs: { button: "", ripple: true } },
+                            [
+                              _c("mu-list-item-title", [_vm._v("جستجو")]),
+                              _vm._v(" "),
+                              _c(
+                                "mu-list-item-action",
+                                [_c("mu-icon", { attrs: { value: "search" } })],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item",
+                            { attrs: { button: "", ripple: true } },
+                            [
+                              _c("mu-list-item-title", [_vm._v("آپلود رسانه")]),
+                              _vm._v(" "),
+                              _c(
+                                "mu-list-item-action",
+                                [
+                                  _c("mu-icon", {
+                                    attrs: { value: "cloud_upload" }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item",
+                            { attrs: { button: "", ripple: true } },
+                            [
+                              _c("mu-list-item-title", [_vm._v("پروفایل")]),
+                              _vm._v(" "),
+                              _c(
+                                "mu-list-item-action",
+                                [_c("mu-icon", { attrs: { value: "person" } })],
+                                1
+                              )
+                            ],
                             1
                           )
                         ],
@@ -17845,14 +17941,12 @@ var render = function() {
                 ],
                 1
               )
-            ],
-            1
+            ]
           )
-        ]
+        ],
+        1
       )
-    ],
-    1
-  )
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -18287,27 +18381,6 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-aacc3324", module.exports)
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-fa6affac\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/home.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div")
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-fa6affac", module.exports)
   }
 }
 
@@ -33225,7 +33298,15 @@ Vue.router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
     routes: [{
         path: '/',
         name: 'default',
-        component: __webpack_require__("./resources/js/components/home.vue")
+        component: __webpack_require__("./resources/js/components/dashboard.vue"),
+        meta: {
+            auth: true
+        },
+        children: [{
+            path: '/feeds',
+            name: 'feeds',
+            component: __webpack_require__("./resources/js/components/pages/timeline.vue")
+        }]
     }, {
         path: '/login',
         name: 'login',
@@ -33239,13 +33320,6 @@ Vue.router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
         component: __webpack_require__("./resources/js/components/register.vue"),
         meta: {
             auth: false
-        }
-    }, {
-        path: '/home',
-        name: 'home',
-        component: __webpack_require__("./resources/js/components/dashboard.vue"),
-        meta: {
-            auth: true
         }
     }, {
         path: '/404',
@@ -33403,54 +33477,6 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ "./resources/js/components/home.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
-/* script */
-var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/js/components/home.vue")
-/* template */
-var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-fa6affac\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/home.vue")
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/home.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-fa6affac", Component.options)
-  } else {
-    hotAPI.reload("data-v-fa6affac", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-
 /***/ "./resources/js/components/login.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33492,6 +33518,54 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-172b28a4", Component.options)
   } else {
     hotAPI.reload("data-v-172b28a4", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/timeline.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/js/components/pages/timeline.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-16687b37\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/pages/timeline.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/pages/timeline.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-16687b37", Component.options)
+  } else {
+    hotAPI.reload("data-v-16687b37", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

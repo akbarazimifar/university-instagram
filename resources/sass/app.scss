@@ -117,3 +117,29 @@ body {
 .sidebar li[active=true] .mu-item-title,.sidebar li[active=true] .mu-item-action{
   color: #0d47a1;
 }
+.feedPosts .mu-card{
+    margin-left: 15px;
+    margin-top: 20px;
+    width: 48%;
+    margin-bottom: 20px;
+    max-width: 500px;
+    display: inline-block;
+    font-family: IranSans-Light;
+    text-align: right;
+}
+.feedPosts .mu-card .mu-card-header{
+    direction: rtl;
+}
+.feedPosts .mu-card .mu-card-header-title{
+    padding-right: 10px;
+    padding-top: 7px;
+}
+.feedPosts{
+    overflow: auto;
+    text-align: center;
+    width: 100%;
+    padding: 10px 1%;
+    margin: 0 auto;
+    height: 100vh;
+    direction: rtl;
+}

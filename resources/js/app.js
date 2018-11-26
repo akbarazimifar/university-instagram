@@ -15,7 +15,17 @@ Vue.router = new VueRouter({
         {
             path: '/',
             name: 'default',
-            component: require('./components/home.vue')
+            component: require('./components/dashboard.vue'),
+            meta: {
+                auth: true,
+            },
+            children: [
+                {
+                  path: '/feeds',
+                  name: 'feeds',
+                  component: require('./components/pages/timeline.vue')
+                },
+              ]
         }, {
             path: '/login',
             name: 'login',
@@ -29,13 +39,6 @@ Vue.router = new VueRouter({
             component: require('./components/register.vue'),
             meta: {
                 auth: false,
-            }
-        }, {
-            path: '/home',
-            name: 'home',
-            component: require('./components/dashboard.vue'),
-            meta: {
-                auth: true,
             }
         }, {
             path: '/404',

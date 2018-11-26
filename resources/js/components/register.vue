@@ -183,7 +183,7 @@ export default {
                 _this.$auth.login({
                   data: _this.data.body,
                   rememberMe: true,
-                  redirect: "/home",
+                  redirect: "/feeds",
                   success: function() {
                     _this.LoginError = false;
                     _this.isLogingin = false;

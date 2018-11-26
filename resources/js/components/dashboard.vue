@@ -1,7 +1,9 @@
 <template>
-    <mu-row>
+    <mu-row v-if="loaded">
         <mu-col span="12" sm="12" md="12" lg="9" xl="9" class='container'>
-            sdas
+            <router-view>
+                
+            </router-view>
         </mu-col>
         <mu-col span="12" sm="0" md="0" lg="3" xl="3" class='sidebar'>
             <div class="profileSelction">
@@ -44,11 +46,22 @@
 
 <script>
     export default {
+        data(){
+            return {
+                loaded : false,
+            }
+        },
         created() {
 
         },
         mounted: function () {
-
+            console.log(this.$auth.check());
+            if(!this.$auth.check()){
+                Vue.router.push("login");
+            }else{ 
+                Vue.router.push("feeds");
+                this.loaded = true;
+            }
         },
         methods: {
             logout: function () {
