@@ -60,7 +60,7 @@
             if (!this.$auth.check()) {
                 Vue.router.push("login");
             } else {
-                Vue.router.push("feeds");
+                //Vue.router.push("feeds");
                 this.loaded = true;
             }
         },
