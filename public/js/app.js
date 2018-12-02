@@ -2839,7 +2839,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         if (!this.$auth.check()) {
             Vue.router.push("login");
         } else {
-            Vue.router.push("feeds");
+            //Vue.router.push("feeds");
             this.loaded = true;
         }
     },
@@ -3022,7 +3022,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                           _this.axios.get("api/user/self").then(function (data) {
                                               console.log(JSON.stringify(data.data));
                                           }).catch(function (data) {
-                                            });*/
+                                           });*/
         }, function (res) {
           _this.isLogingin = false;
           _this.LoginError = true;
@@ -3042,14 +3042,55 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      feeds: []
+      searchInput: "",
+      searchResult: []
     };
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {},
+
+  methods: {
+    search: function search() {
+      this.searchResult = [];
+      var _this = this;
+      Vue.axios.get("/api/search", {
+        params: {
+          query: this.searchInput
+        }
+      }).then(function (response) {
+        _this.searchResult = response.data.data;
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3366,7 +3407,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
+exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
 
 // exports
 
@@ -3381,7 +3422,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
+exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
 
 // exports
 
@@ -17854,7 +17895,115 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("p", [_vm._v("asdad")])
+  return _c("div", { staticClass: "feedPosts" }, [
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.search($event)
+          }
+        }
+      },
+      [
+        _c("mu-text-field", {
+          staticClass: "rtl",
+          attrs: { label: "جستوجو...", "label-float": "" },
+          on: { submit: _vm.search },
+          model: {
+            value: _vm.searchInput,
+            callback: function($$v) {
+              _vm.searchInput = $$v
+            },
+            expression: "searchInput"
+          }
+        })
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "result" },
+      _vm._l(_vm.searchResult, function(result) {
+        return _c(
+          "mu-container",
+          [
+            _c(
+              "mu-card",
+              {
+                staticStyle: {
+                  width: "100%",
+                  "max-width": "375px",
+                  margin: "0 auto"
+                }
+              },
+              [
+                _c(
+                  "mu-card-header",
+                  {
+                    attrs: {
+                      title:
+                        result.username +
+                        (result.profile_status !== "PUBLIC" ? " 🔒" : ""),
+                      "sub-title": result.first_name + " " + result.last_name
+                    }
+                  },
+                  [
+                    _c(
+                      "mu-avatar",
+                      { attrs: { slot: "avatar" }, slot: "avatar" },
+                      [
+                        result.profile != null
+                          ? _c("img", { attrs: { src: result.profile } })
+                          : _c("img", { attrs: { src: "/img/profile.jpg" } })
+                      ]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("mu-card-text", [
+                  _vm._v(
+                    "\n            دنبال‌کننده‌ها: " +
+                      _vm._s(result.followers_count)
+                  ),
+                  _c("br"),
+                  _vm._v(
+                    "\n            دنبال‌شنوده‌ها: " +
+                      _vm._s(result.followings_count)
+                  ),
+                  _c("br"),
+                  _vm._v(
+                    "\n            پست‌ها: " +
+                      _vm._s(result.medias_count) +
+                      "\n\n          "
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "mu-card-actions",
+                  [
+                    _c("mu-button", { attrs: { flat: "" } }, [
+                      _vm._v("دنبال کن")
+                    ]),
+                    _vm._v(" "),
+                    _c("mu-button", { attrs: { flat: "" } }, [
+                      _vm._v("مشاهده پروفایل")
+                    ])
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      })
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21077,7 +21226,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("663200e2", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("81eb9b22", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -21104,7 +21253,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("520c4aab", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("40ba91fe", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -33333,7 +33482,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__("./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
 window.client_id = 2;
-window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo';
+window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO';
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 
