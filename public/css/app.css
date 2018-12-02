@@ -196,8 +196,8 @@ body {
   margin: 0px auto;
 }
 
-.sidebar li[active=true] .mu-item-title,
-.sidebar li[active=true] .mu-item-action {
+.sidebar a.router-link-active .mu-item-title,
+.sidebar a.router-link-active .mu-item-action {
   color: #0d47a1;
 }
 

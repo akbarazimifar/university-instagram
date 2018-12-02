@@ -1,7 +1,7 @@
 <template>
   <div class="feedPosts">
-    <mu-card v-for="f in feeds">
-      <mu-card-header :title="f.user.first_name+ ' '+f.user.last_name">
+    <mu-card v-for="(f,index) in feeds">
+      <mu-card-header :key="index" :title="f.user.first_name+ ' '+f.user.last_name">
         <mu-avatar slot="avatar">
           <img src="f.user.profile">
         </mu-avatar>

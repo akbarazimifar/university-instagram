@@ -9,6 +9,10 @@ Vue.use(require('vue-axios'), require('axios'));
 Vue.axios.defaults.baseURL = 'http://localhost:3000/';
 Vue.router = VueRouter;
 Vue.use(require("muse-ui"));
+Vue.axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+
+
 Vue.router = new VueRouter({
     mode: 'history',
     routes: [
@@ -24,7 +28,11 @@ Vue.router = new VueRouter({
                   path: '/feeds',
                   name: 'feeds',
                   component: require('./components/pages/timeline.vue')
-                },
+                }, {
+                    path: '/search',
+                    name: 'search',
+                    component: require('./components/pages/search.vue')
+                  },
               ]
         }, {
             path: '/login',
@@ -65,6 +73,7 @@ Vue.use(require('@websanova/vue-auth'), {
             if (!refresh) {
                 token = token[0]
                 req.headers['Authorization'] = 'Bearer ' + token
+                req.headers['Accept'] = 'application/json'
             } else {
                 token = token[1]
                 req.data = {
