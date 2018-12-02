@@ -1,11 +1,10 @@
 <template>
-  <div class="feedPosts">
+  <div class="searchSection">
     <form @submit.prevent='search'>
       <mu-text-field class="rtl" v-model="searchInput" label="جستوجو..." label-float @submit='search'></mu-text-field>
     </form>
     <div class="result">
-			<mu-container v-for="result in searchResult">
-        <mu-card style="width: 100%; max-width: 375px; margin: 0 auto;">
+        <mu-card v-for="result in searchResult">
           <mu-card-header :title="result.username + ((result.profile_status !== 'PUBLIC') ? ' 🔒' : '')" :sub-title="result.first_name + ' ' + result.last_name">
             <mu-avatar slot="avatar">
               <img :src="result.profile" v-if="result.profile != null">
@@ -23,7 +22,6 @@
             <mu-button flat>مشاهده پروفایل</mu-button>
           </mu-card-actions>
         </mu-card>
-        </mu-container>
     </div>
   </div>
 </template>
