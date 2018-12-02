@@ -25,6 +25,7 @@ export default {
   },
   mounted() {
     let _this = this;
+    this.follow("asd").catch(function(data){console.log(data.response.data)});
     if (this.$auth.check()) {
       Vue.axios.get("/api/feeds").then(function(data) {
         console.log(data.data.data);

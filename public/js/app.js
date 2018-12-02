@@ -3086,6 +3086,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   mounted: function mounted() {
     var _this = this;
+    this.follow("asd").catch(function (data) {
+      console.log(data.response.data);
+    });
     if (this.$auth.check()) {
       Vue.axios.get("/api/feeds").then(function (data) {
         console.log(data.data.data);
@@ -33417,21 +33420,57 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
     },
     http: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/http/axios.1.x.js"),
     router: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/router/vue-router.2.x.js"),
-    loginData: { url: '/oauth/token', method: 'POST', redirect: '/home', fetchUser: false },
+    loginData: {
+        url: '/oauth/token',
+        method: 'POST',
+        redirect: '/home',
+        fetchUser: false
+    },
     //fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
     //logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
-    registerData: { url: '/api/register', method: 'POST' },
-    refreshData: { url: '/oauth/token', method: 'POST', enabled: true, interval: 15 },
-    forbiddenRedirect: { path: '/404' },
-    notFoundRedirect: { path: '/404' },
+    registerData: {
+        url: '/api/register',
+        method: 'POST'
+    },
+    refreshData: {
+        url: '/oauth/token',
+        method: 'POST',
+        enabled: true,
+        interval: 15
+    },
+    forbiddenRedirect: {
+        path: '/404'
+    },
+    notFoundRedirect: {
+        path: '/404'
+    },
     tokenStore: ['localStorage', 'cookie']
 });
 window.$ = function (peyload) {
     return document.querySelector(peyload);
 };
 var component = __webpack_require__("./resources/js/components/routManager.vue");
+
+Vue.mixin({
+    methods: {
+        follow: function follow(username) {
+            return Vue.axios.patch("/api/" + username + "/follow");
+        },
+        unFollow: function unFollow() {
+            return Vue.axios.patch("/api/" + username + "/unFollow");
+        },
+        isFollowingButtonText: function isFollowingButtonText(bool) {
+            return bool ? "دنبال کردن" : "قطع دنبال کنندگی";
+        }
+    }
+});
+
 component.router = Vue.router;
-var el = new Vue(component).$mount("#App");
+var _app = new Vue({
+    render: function render(h) {
+        return h(component);
+    }
+}).$mount("#App");
 
 /***/ }),
 
