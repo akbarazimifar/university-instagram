@@ -126,7 +126,13 @@ var component = require('./components/routManager.vue');
 Vue.mixin({
     methods: {
         follow: function (username) {
-            return Vue.axios.patch("/api/" + username + "/follow");
+            return Vue.axios.patch("/api/" + username + "/follow")
+            .then(function(data){
+                return data.data
+            }
+            ).catch(function(data){
+                return data.response.data
+            });
         },
         unFollow: function () {
             return Vue.axios.patch("/api/" + username + "/unFollow");

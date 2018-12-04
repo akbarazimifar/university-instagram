@@ -23,9 +23,10 @@ export default {
       feeds: []
     };
   },
-  mounted() {
+  mounted:async function() {
     let _this = this;
-    this.follow("asd").catch(function(data){console.log(data.response.data)});
+    let response = await this.follow("qqwe23");
+    console.log(response);
     if (this.$auth.check()) {
       Vue.axios.get("/api/feeds").then(function(data) {
         console.log(data.data.data);

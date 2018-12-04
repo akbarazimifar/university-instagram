@@ -1,34 +1,35 @@
 <template>
-    <mu-container class="demo-container">
-        <mu-row gutter>
-            <mu-col span="12" sm="12" md="8" lg="6" xl="4" class="maginAuto">
-                <mu-card class='rtl loginCard'>
-                    <mu-card-title title="ورود کاربران" sub-title="برای ورود به پنل کاربری ایمیل و رمز عبور خود را وارد کنید"></mu-card-title>
-                    <mu-card-text>
-                        <mu-form ref="form" :model="data.body" class="rtl">
-                            <mu-form-item label="ایمیل" prop="username" :rules="usernameRules">
-                                <mu-text-field v-model="data.body.username" prop="username"></mu-text-field>
-                            </mu-form-item>
-                            <mu-form-item label="رمزعبور" prop="password" :rules="passwordRules">
-                                <mu-text-field type="password" v-model="data.body.password" prop="password"></mu-text-field>
-                            </mu-form-item>
-                            <transition name="slideDown">
-                                <mu-form-item v-if="LoginError && errorText.length > 0">
-                                    <mu-alert color="error">
-                                        {{errorText}}
-                                    </mu-alert>
-                                </mu-form-item>
-                            </transition>
-                            <mu-form-item>
-                                <mu-button :disabled="isLogingin" color="primary" @click="submit">ورود</mu-button>
-                                <router-link to="/register" tag="mu-button">ثبت نام</router-link>
-                            </mu-form-item>
-                        </mu-form>
-                    </mu-card-text>
-                </mu-card>
-            </mu-col>
-        </mu-row>
-    </mu-container>
+  <mu-container class="demo-container">
+    <mu-row gutter>
+      <mu-col span="12" sm="12" md="8" lg="6" xl="4" class="maginAuto">
+        <mu-card class="rtl loginCard">
+          <mu-card-title
+            title="ورود کاربران"
+            sub-title="برای ورود به پنل کاربری ایمیل و رمز عبور خود را وارد کنید"
+          ></mu-card-title>
+          <mu-card-text>
+            <mu-form ref="form" :model="data.body" class="rtl">
+              <mu-form-item label="ایمیل" prop="username" :rules="usernameRules">
+                <mu-text-field v-model="data.body.username" prop="username"></mu-text-field>
+              </mu-form-item>
+              <mu-form-item label="رمزعبور" prop="password" :rules="passwordRules">
+                <mu-text-field type="password" v-model="data.body.password" prop="password"></mu-text-field>
+              </mu-form-item>
+              <transition name="slideDown">
+                <mu-form-item v-if="LoginError && errorText.length > 0">
+                  <mu-alert color="error">{{errorText}}</mu-alert>
+                </mu-form-item>
+              </transition>
+              <mu-form-item>
+                <mu-button :disabled="isLogingin" color="primary" @click="submit">ورود</mu-button>
+                <router-link to="/register" tag="mu-button">ثبت نام</router-link>
+              </mu-form-item>
+            </mu-form>
+          </mu-card-text>
+        </mu-card>
+      </mu-col>
+    </mu-row>
+  </mu-container>
 </template>
 <style>
 .loginCard {
@@ -75,7 +76,9 @@ export default {
       errorText: ""
     };
   },
-  mounted() {},
+  mounted() {
+    
+  },
   watch: {
     "data.body.username": function(newVal) {
       if (newVal.length > 0) {
