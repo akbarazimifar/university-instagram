@@ -3023,7 +3023,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                           _this.axios.get("api/user/self").then(function (data) {
                                               console.log(JSON.stringify(data.data));
                                           }).catch(function (data) {
-                                            });*/
+                                           });*/
         }, function (res) {
           _this.isLogingin = false;
           _this.LoginError = true;
@@ -3040,6 +3040,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -3088,6 +3089,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (response) {
         _this.searchResult = response.data.data;
       });
+    },
+    follow_result: function follow_result(index) {
+      this.follow(this.searchResult[index].username);
+      this.searchResult[index].followers_count++;
+      this.searchResult[index].is_followed = true;
+    },
+    unfollow_result: function unfollow_result(index) {
+      this.unFollow(this.searchResult[index].username);
+      this.searchResult[index].followers_count--;
+      this.searchResult[index].is_followed = false;
     }
   }
 });
@@ -3446,7 +3457,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
+exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
 
 // exports
 
@@ -3461,7 +3472,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
+exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
 
 // exports
 
@@ -18735,7 +18746,7 @@ var render = function() {
     _c(
       "div",
       { staticClass: "result" },
-      _vm._l(_vm.searchResult, function(result) {
+      _vm._l(_vm.searchResult, function(result, i) {
         return _c(
           "mu-card",
           [
@@ -18778,7 +18789,31 @@ var render = function() {
             _c(
               "mu-card-actions",
               [
-                _c("mu-button", { attrs: { flat: "" } }, [_vm._v("دنبال کن")]),
+                result.is_followed
+                  ? _c(
+                      "mu-button",
+                      {
+                        attrs: { flat: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.unfollow_result(i)
+                          }
+                        }
+                      },
+                      [_vm._v("دنبال نکن")]
+                    )
+                  : _c(
+                      "mu-button",
+                      {
+                        attrs: { color: "info" },
+                        on: {
+                          click: function($event) {
+                            _vm.follow_result(i)
+                          }
+                        }
+                      },
+                      [_vm._v("دنبال کن")]
+                    ),
                 _vm._v(" "),
                 _c("mu-button", { attrs: { flat: "" } }, [
                   _vm._v("مشاهده پروفایل")
@@ -22014,7 +22049,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("663200e2", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("81eb9b22", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -22041,7 +22076,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("520c4aab", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("40ba91fe", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -34270,7 +34305,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__("./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
 window.client_id = 2;
-window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo';
+// window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 
@@ -34397,8 +34433,12 @@ Vue.mixin({
                 return data.response.data;
             });
         },
-        unFollow: function unFollow() {
-            return Vue.axios.patch("/api/" + username + "/unFollow");
+        unFollow: function unFollow(username) {
+            return Vue.axios.patch("/api/" + username + "/unfollow").then(function (data) {
+                return data.data;
+            }).catch(function (data) {
+                return data.response.data;
+            });
         },
         isFollowingButtonText: function isFollowingButtonText(bool) {
             return bool ? "دنبال کردن" : "قطع دنبال کنندگی";

@@ -1,5 +1,6 @@
 window.client_id = 2;
-window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo';
+// window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
 window.Vue = require('vue');
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
@@ -134,8 +135,14 @@ Vue.mixin({
                 return data.response.data
             });
         },
-        unFollow: function () {
-            return Vue.axios.patch("/api/" + username + "/unFollow");
+        unFollow: function (username) {
+          return Vue.axios.patch("/api/" + username + "/unfollow")
+            .then(function(data){
+              return data.data
+            })
+            .catch(function(data) {
+              return data.response.data;
+            })
         },
         isFollowingButtonText: function (bool) {
             return bool ? "دنبال کردن" : "قطع دنبال کنندگی"

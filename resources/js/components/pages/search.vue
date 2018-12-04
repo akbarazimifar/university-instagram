@@ -4,7 +4,7 @@
       <mu-text-field class="rtl" v-model="searchInput" label="جستوجو..." label-float @submit='search'></mu-text-field>
     </form>
     <div class="result">
-        <mu-card v-for="result in searchResult">
+        <mu-card v-for="result, i in searchResult">
           <mu-card-header :title="result.username + ((result.profile_status !== 'PUBLIC') ? ' 🔒' : '')" :sub-title="result.first_name + ' ' + result.last_name">
             <mu-avatar slot="avatar">
               <img :src="result.profile" v-if="result.profile != null">
@@ -18,7 +18,8 @@
 
           </mu-card-text>
           <mu-card-actions>
-            <mu-button flat>دنبال کن</mu-button>
+            <mu-button v-if="result.is_followed" flat @click="unfollow_result(i)">دنبال نکن</mu-button>
+            <mu-button v-else color="info" @click="follow_result(i)">دنبال کن</mu-button>
             <mu-button flat>مشاهده پروفایل</mu-button>
           </mu-card-actions>
         </mu-card>
@@ -45,6 +46,16 @@ export default {
           query: this.searchInput
         }
       }).then((response) => {_this.searchResult = response.data.data})
+    },
+    follow_result(index) {
+      this.follow(this.searchResult[index].username)
+      this.searchResult[index].followers_count++;
+      this.searchResult[index].is_followed = true;
+    },
+    unfollow_result(index) {
+      this.unFollow(this.searchResult[index].username)
+      this.searchResult[index].followers_count--;
+      this.searchResult[index].is_followed = false;
     }
   }
 };
