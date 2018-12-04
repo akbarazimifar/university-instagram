@@ -1,6 +1,6 @@
 window.client_id = 2;
-// window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
-window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
+window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+//window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
 window.Vue = require('vue');
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
@@ -95,10 +95,10 @@ Vue.use(require('@websanova/vue-auth'), {
         url: '/oauth/token',
         method: 'POST',
         redirect: '/home',
-        fetchUser: false
+        fetchUser: true
     },
-    //fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
-    //logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
+    fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
+    logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
     registerData: {
         url: '/api/register',
         method: 'POST'

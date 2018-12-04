@@ -3023,7 +3023,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                           _this.axios.get("api/user/self").then(function (data) {
                                               console.log(JSON.stringify(data.data));
                                           }).catch(function (data) {
-                                           });*/
+                                            });*/
         }, function (res) {
           _this.isLogingin = false;
           _this.LoginError = true;
@@ -3457,7 +3457,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
 
 // exports
 
@@ -3472,7 +3472,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
 
 // exports
 
@@ -22049,7 +22049,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("81eb9b22", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("663200e2", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -22076,7 +22076,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("40ba91fe", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("520c4aab", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -34305,8 +34305,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__("./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
 window.client_id = 2;
-// window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
-window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
+window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+//window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 
@@ -34397,10 +34397,10 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
         url: '/oauth/token',
         method: 'POST',
         redirect: '/home',
-        fetchUser: false
+        fetchUser: true
     },
-    //fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
-    //logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
+    fetchData: { url: '/api/user/self', method: 'GET', enabled: true },
+    logoutData: { url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true },
     registerData: {
         url: '/api/register',
         method: 'POST'
