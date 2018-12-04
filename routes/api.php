@@ -23,7 +23,7 @@ Route::middleware(['auth:api'])->group(function () {
 });
 Route::middleware(['auth:api', 'username'])->group(function () {
     Route::prefix('{username}')->name('user.')->group(function () {
-        Route::get('.', [\App\Http\Controllers\UserController::class, 'show'])->name('profile');
+        Route::get('/', [\App\Http\Controllers\UserController::class, 'show'])->name('profile');
         Route::patch('edit', [\App\Http\Controllers\UserController::class, 'edit'])->name('profile.edit');
 
         Route::get('medias', [\App\Http\Controllers\MediaController::class, 'getUserMedias'])->name('medias');
