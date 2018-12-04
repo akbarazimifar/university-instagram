@@ -2841,6 +2841,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         } else {
             //Vue.router.push("feeds");
             this.loaded = true;
+            console.log(this.$auth.user());
         }
     },
     methods: {
@@ -3047,21 +3048,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
-      currentUser: {}
-    };
+    return {};
   },
 
-  methods: {
-    getUserInfo: function getUserInfo() {
-      Vue.axios.get("/api/user/self").then(function (response) {
-        return console.log(response);
-      });
-    }
-  },
-  created: function created() {
-    this.getUserInfo();
-  }
+  methods: {},
+  created: function created() {}
 });
 
 /***/ }),
@@ -18979,7 +18970,9 @@ var render = function() {
                                 ripple: true,
                                 to: {
                                   name: "profile",
-                                  params: { username: "darksun" }
+                                  params: {
+                                    username: this.$auth.user().username
+                                  }
                                 }
                               }
                             },
@@ -34455,6 +34448,9 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
                 }
             }
         }
+    },
+    parseUserData: function parseUserData(data) {
+        return data;
     },
     http: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/http/axios.1.x.js"),
     router: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/router/vue-router.2.x.js"),

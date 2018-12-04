@@ -95,6 +95,9 @@ Vue.use(require('@websanova/vue-auth'), {
             }
         }
     },
+    parseUserData: function (data) {
+        return data;
+    },
     http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
     router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
     loginData: {
