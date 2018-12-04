@@ -1,6 +1,6 @@
 window.client_id = 2;
-window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
-//window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
+//window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
 window.Vue = require('vue');
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
@@ -31,7 +31,13 @@ Vue.router = new VueRouter({
             path: '/search',
             name: 'search',
             component: require('./components/pages/search.vue')
-        }, ]
+        }, {
+            path: '/u/:username',
+            name: 'profile',
+            component: require('./components/pages/profile.vue')
+        }
+        
+        ]
     }, {
         path: '/login',
         name: 'login',

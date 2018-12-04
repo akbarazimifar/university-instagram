@@ -32,7 +32,7 @@
                                 <mu-icon value="cloud_upload"></mu-icon>
                             </mu-list-item-action>
                         </mu-list-item>
-                        <mu-list-item button :ripple="true">
+                        <mu-list-item button :ripple="true" :to="{name:'profile', params:{username:'darksun'}}">
                             <mu-list-item-title>پروفایل</mu-list-item-title>
                             <mu-list-item-action>
                                 <mu-icon value="person"></mu-icon>
