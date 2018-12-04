@@ -109,7 +109,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             if ($user->profile_status === "PUBLIC") {
                 $is_accepted = true;
-                $status_code = 200;
+                $status_code = 201;
                 $description = 'User successfully followed.';
             } else {
                 $is_accepted = false;
