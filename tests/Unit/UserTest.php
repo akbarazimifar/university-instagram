@@ -47,6 +47,30 @@ class UserTest extends TestCase
         $response->assertJson(['ok' => true]);
     }
 
+    public function testUserSelf()
+    {
+        Passport::actingAs(self::$user);
+        $response = $this->call('get', route('user.self', self::$user->username));
+        dd($response->getContent());
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'profile_status',
+            'followers_count',
+            'followings_count',
+            'medias_count',
+            'profile' => [
+                'file_path',
+                'thumb_path',
+                'width',
+                'height'
+            ]
+        ]);
+    }
+
     public function testSearch()
     {
         Passport::actingAs(self::$user);
@@ -98,7 +122,7 @@ class UserTest extends TestCase
     public function testUserProfile()
     {
         Passport::actingAs(self::$user);
-        $response = $this->call('get', Route('user.profile', self::$user->username));
+        $response = $this->call('get', route('user.profile', self::$user->username));
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'id',

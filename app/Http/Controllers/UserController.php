@@ -18,7 +18,7 @@ class UserController extends Controller
     public function self()
     {
         if (Auth::check())
-            return Auth::user()->with('profile');
+            return Auth::user()->load('profile');
         return response(['ok' => false, 'description' => 'You are not logged in.'], 403);
     }
 

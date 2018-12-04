@@ -16,7 +16,7 @@ Route::post('register', [\App\Http\Controllers\UserController::class, 'register'
 Route::post('logout', [\App\Http\Controllers\UserController::class, 'logout'])->name('user.logout');
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::get('user/self',[\App\Http\Controllers\UserController::class,'self'])->name('user.self');
+    Route::get('user/self',[\App\Http\Controllers\UserController::class, 'self'])->name('user.self');
     Route::get('feeds', [\App\Http\Controllers\FeedController::class, 'homepage'])->name('user.feeds');
     Route::get('search', [\App\Http\Controllers\UserController::class, 'search'])->name('user.search');
     Route::post('upload', [\App\Http\Controllers\MediaController::class, 'upload'])->name('user.media.upload');
