@@ -3045,14 +3045,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {};
+    return {
+      user: {}
+    };
   },
 
-  methods: {},
-  created: function created() {}
+  methods: {
+    getUser: function getUser() {
+      var _this = this;
+
+      Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
+        return _this.user = resp.data;
+      });
+    },
+    getUserMedia: function getUserMedia() {
+      Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
+        return console.log(resp);
+      });
+    }
+  },
+  created: function created() {
+    this.getUser();
+  },
+  mounted: function mounted() {
+    this.getUserMedia();
+  }
 });
 
 /***/ }),
@@ -19448,7 +19478,40 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "div",
+    { staticClass: "rtl" },
+    [
+      _c(
+        "mu-container",
+        { staticClass: "center" },
+        [
+          _c("mu-avatar", { attrs: { size: "128" } }, [
+            _c("img", {
+              attrs: {
+                src:
+                  _vm.user.profile !== null
+                    ? _vm.user.profile
+                    : "/img/profile.jpg"
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("ul", {}, [
+            _c("li", [
+              _vm._v(
+                _vm._s(_vm.user.first_name) + " " + _vm._s(_vm.user.last_name)
+              )
+            ]),
+            _vm._v(" "),
+            _c("li", [_vm._v(_vm._s(_vm.user.username))])
+          ])
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
