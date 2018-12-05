@@ -127,6 +127,10 @@ class MediaController extends Controller
             $img->fit(300, 300, function ($constraint) {
                 $constraint->upsize();
             });
+            $save_path = 'public/storage/medias/thumbs/';
+            if (!file_exists($save_path)) {
+                mkdir($save_path, 666, true);
+            }
             $img->save('public/storage/medias/thumbs/' . basename($file_path));
         } catch (\Exception $e) {
             return response([

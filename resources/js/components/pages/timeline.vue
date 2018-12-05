@@ -26,10 +26,10 @@ export default {
   mounted:async function() {
     let _this = this;
     let response = await this.follow("qqwe23");
-    console.log(response);
+    //console.log(response);
     if (this.$auth.check()) {
       Vue.axios.get("/api/feeds").then(function(data) {
-        console.log(data.data.data);
+        //console.log(data.data.data);
         _this.feeds = data.data.data;
       });
     }

@@ -2835,13 +2835,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     created: function created() {},
 
     mounted: function mounted() {
-        console.log(this.$auth.check());
+        //console.log(this.$auth.check());
         if (!this.$auth.check()) {
             Vue.router.push("login");
         } else {
             //Vue.router.push("feeds");
             this.loaded = true;
-            console.log(this.$auth.user());
+            //console.log(this.$auth.user())
         }
     },
     methods: {
@@ -3024,7 +3024,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                           _this.axios.get("api/user/self").then(function (data) {
                                               console.log(JSON.stringify(data.data));
                                           }).catch(function (data) {
-                                           });*/
+                                            });*/
         }, function (res) {
           _this.isLogingin = false;
           _this.LoginError = true;
@@ -3055,34 +3055,86 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      user: {}
-    };
-  },
-
-  methods: {
-    getUser: function getUser() {
-      var _this = this;
-
-      Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
-        return _this.user = resp.data;
-      });
+    data: function data() {
+        return {
+            user: {},
+            medias: [],
+            mediasRequestSent: false
+        };
     },
-    getUserMedia: function getUserMedia() {
-      Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
-        return console.log(resp);
-      });
+
+    methods: {
+        getUser: function getUser() {
+            var _this = this;
+
+            Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
+                return _this.user = resp.data;
+            });
+        },
+        getUserMedia: function getUserMedia() {
+            var _this2 = this;
+
+            Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
+                _this2.medias = resp.data.data;_this2.mediasRequestSent = true;
+            });
+        },
+        followUser: function followUser(index) {
+            this.follow(index);
+            this.user.is_followed = true;
+        },
+        unfollowUser: function unfollowUser(index) {
+            this.unFollow(index);
+            this.user.is_followed = true;
+        }
+    },
+    created: function created() {
+        this.getUser();
+    },
+    mounted: function mounted() {
+        this.getUserMedia();
     }
-  },
-  created: function created() {
-    this.getUser();
-  },
-  mounted: function mounted() {
-    this.getUserMedia();
-  }
 });
 
 /***/ }),
@@ -3209,15 +3261,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             case 3:
               response = _context.sent;
 
-              console.log(response);
+              //console.log(response);
               if (this.$auth.check()) {
                 Vue.axios.get("/api/feeds").then(function (data) {
-                  console.log(data.data.data);
+                  //console.log(data.data.data);
                   _this.feeds = data.data.data;
                 });
               }
 
-            case 6:
+            case 5:
             case "end":
               return _context.stop();
           }
@@ -3231,6 +3283,83 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
     return mounted;
   }()
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/js/components/pages/upload.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            selectedFile: null,
+            uploadigProgress: 0,
+            isUploading: false,
+            caption: "",
+            fileError: ""
+        };
+    },
+
+    methods: {
+        onFileChanged: function onFileChanged(event) {
+            this.selectedFile = event.target.files[0];
+        },
+        onUpload: function onUpload() {
+            this.fileError = "";
+            var _this = this;
+            if (this.selectedFile !== null) {
+                this.isUploading = true;
+                var formData = new FormData();
+                formData.append("file", this.selectedFile, this.selectedFile.name);
+                formData.append("caption", this.caption);
+                this.uploadigProgress = 0;
+                setTimeout(function () {
+                    Vue.axios.post("/api/upload", formData, {
+                        onUploadProgress: function onUploadProgress(progressEvent) {
+                            _this.uploadigProgress = progressEvent.loaded / progressEvent.total * 100;
+                        }
+                    }).then(function (resp) {
+                        _this.isUploading = false;
+                    }).catch(function (error) {
+                        _this.fileError = "مشکلی درثبت عکس به وجود آمده است.";
+                        _this.isUploading = false;
+                    });
+                }, 1000);
+            } else {
+                this.fileError = "عکسی انتخاب نشده است.";
+            }
+        }
+    }
 });
 
 /***/ }),
@@ -3509,7 +3638,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
 
 // exports
 
@@ -3524,7 +3653,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.loginCard {\n  margin-top: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.loginCard {\r\n  margin-top: 50px;\n}\r\n", ""]);
 
 // exports
 
@@ -18535,6 +18664,116 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0f367477\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/pages/upload.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "rtl" },
+    [
+      _c(
+        "mu-container",
+        { staticClass: "upload" },
+        [
+          _c("mu-row", [_c("p", [_vm._v("عکس مورد نظر خود را انتخاب کنید.")])]),
+          _vm._v(" "),
+          _c("mu-row", [
+            _c("label", { attrs: { for: "fileUpload" } }, [
+              _vm._v("انتخاب عکس")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              attrs: { type: "file", id: "fileUpload" },
+              on: { change: _vm.onFileChanged }
+            }),
+            _vm._v(" "),
+            _vm.fileError
+              ? _c("div", { staticClass: "mu-form-item__error mu-form" }, [
+                  _vm._v(_vm._s(_vm.fileError))
+                ])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c(
+            "mu-row",
+            [
+              _c("mu-text-field", {
+                attrs: {
+                  placeholder: "توضیحات",
+                  "multi-line": "",
+                  rows: 3,
+                  "rows-max": 6
+                },
+                model: {
+                  value: _vm.caption,
+                  callback: function($$v) {
+                    _vm.caption = $$v
+                  },
+                  expression: "caption"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-row",
+            [
+              _c(
+                "mu-button",
+                { attrs: { color: "primary" }, on: { click: _vm.onUpload } },
+                [_vm._v("آپلود")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-row",
+            [
+              _vm.isUploading
+                ? _c(
+                    "mu-row",
+                    { staticClass: "progressBar" },
+                    [
+                      _vm._v("در حال بارگزاری\n                "),
+                      _c("mu-linear-progress", {
+                        attrs: {
+                          value: _vm.uploadigProgress,
+                          mode: "determinate",
+                          color: "green"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0f367477", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-16687b37\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/pages/timeline.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18923,7 +19162,15 @@ var render = function() {
               _c("div", { staticClass: "profileSelction" }, [
                 _c("img", { attrs: { src: "/img/profile.jpg" } }),
                 _vm._v(" "),
-                _c("h2", [_vm._v("هومن حسن زاده")])
+                _c("h2", [
+                  _vm._v(
+                    _vm._s(
+                      _vm.$auth.user().first_name +
+                        " " +
+                        this.$auth.user().last_name
+                    )
+                  )
+                ])
               ]),
               _vm._v(" "),
               _c(
@@ -18975,7 +19222,9 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "mu-list-item",
-                            { attrs: { button: "", ripple: true } },
+                            {
+                              attrs: { button: "", ripple: true, to: "/upload" }
+                            },
                             [
                               _c("mu-list-item-title", [_vm._v("آپلود رسانه")]),
                               _vm._v(" "),
@@ -19483,29 +19732,149 @@ var render = function() {
     { staticClass: "rtl" },
     [
       _c(
-        "mu-container",
-        { staticClass: "center" },
+        "mu-card",
+        { staticClass: "mainContainer" },
         [
-          _c("mu-avatar", { attrs: { size: "128" } }, [
-            _c("img", {
-              attrs: {
-                src:
-                  _vm.user.profile !== null
-                    ? _vm.user.profile
-                    : "/img/profile.jpg"
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("ul", {}, [
-            _c("li", [
-              _vm._v(
-                _vm._s(_vm.user.first_name) + " " + _vm._s(_vm.user.last_name)
-              )
-            ]),
-            _vm._v(" "),
-            _c("li", [_vm._v(_vm._s(_vm.user.username))])
-          ])
+          _c(
+            "mu-container",
+            { staticClass: "profile" },
+            [
+              _c(
+                "mu-row",
+                [
+                  _c(
+                    "mu-col",
+                    { attrs: { span: "12", sm: "6" } },
+                    [
+                      _c(
+                        "mu-card-header",
+                        {
+                          staticClass: "profileHeader",
+                          attrs: {
+                            title:
+                              _vm.user.first_name + " " + _vm.user.last_name,
+                            "sub-title": _vm.user.username
+                          }
+                        },
+                        [
+                          _c(
+                            "mu-avatar",
+                            {
+                              attrs: { slot: "avatar", size: "100" },
+                              slot: "avatar"
+                            },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src:
+                                    _vm.user.profile !== null
+                                      ? _vm.user.profile
+                                      : "/img/profile.jpg"
+                                }
+                              })
+                            ]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "mu-col",
+                    { attrs: { span: "12", sm: "6" } },
+                    [
+                      _c("mu-card-text", [
+                        _vm._v(
+                          "\n                        دنبال‌کننده‌ها: " +
+                            _vm._s(_vm.user.followers_count)
+                        ),
+                        _c("br"),
+                        _vm._v(
+                          "\n                        دنبال‌شنوده‌ها: " +
+                            _vm._s(_vm.user.followings_count)
+                        ),
+                        _c("br"),
+                        _vm._v(
+                          "\n                        پست‌ها: " +
+                            _vm._s(_vm.user.medias_count) +
+                            "\n\n                    "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "mu-card-actions",
+                        [
+                          _c(
+                            "router-link",
+                            { attrs: { tag: "mu-button", to: "/editProfile" } },
+                            [_vm._v("ویرایش پروفایل")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("h3", [_vm._v("رسانه ها")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "medias" }, [
+                _vm.medias.length > 0
+                  ? _c(
+                      "div",
+                      _vm._l(_vm.medias, function(f) {
+                        return _c(
+                          "mu-card",
+                          { key: f.id },
+                          [
+                            _c("mu-card-media", [
+                              _c("img", {
+                                attrs: { src: "/storage/medias/" + f.file_path }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("mu-card-text", [_vm._v(_vm._s(f.caption))]),
+                            _vm._v(" "),
+                            _c(
+                              "mu-card-actions",
+                              [
+                                _c("mu-button", { attrs: { flat: "" } }, [
+                                  _vm._v("like")
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      })
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.medias.length && _vm.mediasRequestSent
+                  ? _c("div", [
+                      _vm._v(
+                        "\n                    رسانه ای برای نمایش وجود ندارد.\n                "
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.medias.length && !_vm.mediasRequestSent
+                  ? _c("div", [
+                      _vm._v(
+                        "\n                    در حال بارگذاری رسانه ها\n                "
+                      )
+                    ])
+                  : _vm._e()
+              ])
+            ],
+            1
+          )
         ],
         1
       )
@@ -22166,7 +22535,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("81eb9b22", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("663200e2", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -22193,7 +22562,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("40ba91fe", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("520c4aab", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -34422,15 +34791,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__("./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
 window.client_id = 2;
-//window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
-window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
+window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+//window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]);
 Vue.use(__webpack_require__("./node_modules/vue-axios/dist/vue-axios.min.js"), __webpack_require__("./node_modules/axios/index.js"));
-Vue.axios.defaults.baseURL = 'http://localhost:3000/';
+Vue.axios.defaults.baseURL = 'http://localhost:8000/';
 Vue.router = __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */];
 Vue.use(__webpack_require__("./node_modules/muse-ui/dist/muse-ui.esm.js"));
 Vue.axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -34456,6 +34825,10 @@ Vue.router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
             path: '/u/:username',
             name: 'profile',
             component: __webpack_require__("./resources/js/components/pages/profile.vue")
+        }, {
+            path: '/upload',
+            name: 'upload',
+            component: __webpack_require__("./resources/js/components/pages/upload.vue")
         }]
     }, {
         path: '/login',
@@ -34860,6 +35233,54 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-16687b37", Component.options)
   } else {
     hotAPI.reload("data-v-16687b37", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/upload.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/js/components/pages/upload.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0f367477\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/js/components/pages/upload.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/pages/upload.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0f367477", Component.options)
+  } else {
+    hotAPI.reload("data-v-0f367477", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

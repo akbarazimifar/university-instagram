@@ -8,7 +8,7 @@
         <mu-col span="12" sm="0" md="0" lg="3" xl="3" class='sidebar'>
             <div class="profileSelction">
                 <img src="/img/profile.jpg">
-                <h2>هومن حسن زاده</h2>
+                <h2>{{$auth.user().first_name + ' ' + this.$auth.user().last_name}}</h2>
             </div>
             <div class="options">
                 <mu-paper :z-depth="1">
@@ -26,7 +26,7 @@
                                 <mu-icon value="search"></mu-icon>
                             </mu-list-item-action>
                         </mu-list-item>
-                        <mu-list-item button :ripple="true">
+                        <mu-list-item button :ripple="true" to="/upload">
                             <mu-list-item-title>آپلود رسانه</mu-list-item-title>
                             <mu-list-item-action>
                                 <mu-icon value="cloud_upload"></mu-icon>
@@ -56,13 +56,13 @@
 
         },
         mounted: function () {
-            console.log(this.$auth.check());
+            //console.log(this.$auth.check());
             if (!this.$auth.check()) {
                 Vue.router.push("login");
             } else {
                 //Vue.router.push("feeds");
                 this.loaded = true;
-                console.log(this.$auth.user())
+                //console.log(this.$auth.user())
             }
         },
         methods: {
