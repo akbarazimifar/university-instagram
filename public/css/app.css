@@ -291,3 +291,13 @@ body {
   overflow: auto;
 }
 
+.medias > div > div {
+  width: 30.33%;
+  margin: 10px 1.5%;
+  float: right;
+}
+
+.border {
+  border: 1px solid gray;
+}
+

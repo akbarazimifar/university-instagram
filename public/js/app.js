@@ -3095,46 +3095,55 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            user: {},
-            medias: [],
-            mediasRequestSent: false
-        };
-    },
+  data: function data() {
+    return {
+      user: {},
+      medias: [],
+      mediasRequestSent: false
+    };
+  },
 
-    methods: {
-        getUser: function getUser() {
-            var _this = this;
+  methods: {
+    getUser: function getUser() {
+      var _this = this;
 
-            Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
-                return _this.user = resp.data;
-            });
-        },
-        getUserMedia: function getUserMedia() {
-            var _this2 = this;
+      Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
+        return _this.user = resp.data;
+      });
+    },
+    getUserMedia: function getUserMedia() {
+      var _this2 = this;
 
-            Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
-                _this2.medias = resp.data.data;_this2.mediasRequestSent = true;
-            });
-        },
-        followUser: function followUser(index) {
-            this.follow(index);
-            this.user.is_followed = true;
-        },
-        unfollowUser: function unfollowUser(index) {
-            this.unFollow(index);
-            this.user.is_followed = true;
-        }
+      Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
+        _this2.medias = resp.data.data;
+        _this2.mediasRequestSent = true;
+      });
     },
-    created: function created() {
-        this.getUser();
+    followUser: function followUser(username) {
+      this.follow(username);
+      this.user.is_followed = true;
+      this.user.followers_count++;
     },
-    mounted: function mounted() {
-        this.getUserMedia();
+    unfollowUser: function unfollowUser(username) {
+      this.unFollow(username);
+      this.user.is_followed = false;
+      this.user.followers_count--;
     }
+  },
+  created: function created() {
+    this.getUser();
+  },
+  mounted: function mounted() {
+    this.getUserMedia();
+  }
 });
 
 /***/ }),
@@ -3318,48 +3327,63 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            selectedFile: null,
-            uploadigProgress: 0,
-            isUploading: false,
-            caption: "",
-            fileError: ""
-        };
-    },
+  data: function data() {
+    return {
+      selectedFile: null,
+      uploadigProgress: 0,
+      isUploading: false,
+      caption: "",
+      fileError: "",
+      uploadSucceed: false
+    };
+  },
 
-    methods: {
-        onFileChanged: function onFileChanged(event) {
-            this.selectedFile = event.target.files[0];
-        },
-        onUpload: function onUpload() {
-            this.fileError = "";
-            var _this = this;
-            if (this.selectedFile !== null) {
-                this.isUploading = true;
-                var formData = new FormData();
-                formData.append("file", this.selectedFile, this.selectedFile.name);
-                formData.append("caption", this.caption);
-                this.uploadigProgress = 0;
-                setTimeout(function () {
-                    Vue.axios.post("/api/upload", formData, {
-                        onUploadProgress: function onUploadProgress(progressEvent) {
-                            _this.uploadigProgress = progressEvent.loaded / progressEvent.total * 100;
-                        }
-                    }).then(function (resp) {
-                        _this.isUploading = false;
-                    }).catch(function (error) {
-                        _this.fileError = "مشکلی درثبت عکس به وجود آمده است.";
-                        _this.isUploading = false;
-                    });
-                }, 1000);
-            } else {
-                this.fileError = "عکسی انتخاب نشده است.";
+  methods: {
+    onFileChanged: function onFileChanged(event) {
+      this.selectedFile = event.target.files[0];
+      this.uploadSucceed = false;
+    },
+    onUpload: function onUpload() {
+      this.fileError = "";
+      var _this = this;
+      if (this.selectedFile !== null) {
+        this.isUploading = true;
+        this.uploadSucceed = false;
+        var formData = new FormData();
+        formData.append("file", this.selectedFile, this.selectedFile.name);
+        formData.append("caption", this.caption);
+        this.uploadigProgress = 0;
+        setTimeout(function () {
+          Vue.axios.post("/api/upload", formData, {
+            onUploadProgress: function onUploadProgress(progressEvent) {
+              _this.uploadigProgress = progressEvent.loaded / progressEvent.total * 100;
             }
-        }
+          }).then(function (resp) {
+            _this.isUploading = false;
+            _this.uploadSucceed = true;
+            _this.selectedFile = null;
+            _this.fileUploadClear();
+          }).catch(function (error) {
+            _this.fileError = "مشکلی درثبت عکس به وجود آمده است.";
+            _this.isUploading = false;
+          });
+        }, 1000);
+      } else {
+        this.fileError = "عکسی انتخاب نشده است.";
+      }
+    },
+    fileUploadClear: function fileUploadClear() {
+      var input = this.$refs.fileupload;
+      input.type = 'text';
+      input.type = 'file';
+      this.caption = "";
     }
+  }
 });
 
 /***/ }),
@@ -18687,7 +18711,8 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("input", {
-              attrs: { type: "file", id: "fileUpload" },
+              ref: "fileupload",
+              attrs: { type: "file" },
               on: { change: _vm.onFileChanged }
             }),
             _vm._v(" "),
@@ -18740,7 +18765,7 @@ var render = function() {
                     "mu-row",
                     { staticClass: "progressBar" },
                     [
-                      _vm._v("در حال بارگزاری\n                "),
+                      _vm._v("در حال بارگزاری\n        "),
                       _c("mu-linear-progress", {
                         attrs: {
                           value: _vm.uploadigProgress,
@@ -18754,7 +18779,15 @@ var render = function() {
                 : _vm._e()
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _vm.uploadSucceed
+            ? _c("mu-row", [
+                _c("span", { staticClass: "mu-form" }, [
+                  _vm._v("عکس شما با موفقیت آپلود شد.")
+                ])
+              ])
+            : _vm._e()
         ],
         1
       )
@@ -19787,33 +19820,79 @@ var render = function() {
                     [
                       _c("mu-card-text", [
                         _vm._v(
-                          "\n                        دنبال‌کننده‌ها: " +
-                            _vm._s(_vm.user.followers_count)
+                          "\n            دنبال‌کننده‌ها: " +
+                            _vm._s(_vm.user.followers_count) +
+                            "\n            "
                         ),
                         _c("br"),
                         _vm._v(
-                          "\n                        دنبال‌شنوده‌ها: " +
-                            _vm._s(_vm.user.followings_count)
+                          "\n            دنبال‌شنوده‌ها: " +
+                            _vm._s(_vm.user.followings_count) +
+                            "\n            "
                         ),
                         _c("br"),
                         _vm._v(
-                          "\n                        پست‌ها: " +
+                          "\n            پست‌ها: " +
                             _vm._s(_vm.user.medias_count) +
-                            "\n\n                    "
+                            "\n          "
                         )
                       ]),
                       _vm._v(" "),
-                      _c(
-                        "mu-card-actions",
-                        [
-                          _c(
-                            "router-link",
-                            { attrs: { tag: "mu-button", to: "/editProfile" } },
-                            [_vm._v("ویرایش پروفایل")]
+                      _vm.user.username != undefined &&
+                      _vm.$route.params.username == _vm.$auth.user().username
+                        ? _c(
+                            "mu-card-actions",
+                            [
+                              _c(
+                                "router-link",
+                                {
+                                  attrs: {
+                                    tag: "mu-button",
+                                    to: "/editProfile"
+                                  }
+                                },
+                                [_vm._v("ویرایش پروفایل")]
+                              )
+                            ],
+                            1
                           )
-                        ],
-                        1
-                      )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.user.username != undefined &&
+                      _vm.$route.params.username != _vm.$auth.user().username
+                        ? _c(
+                            "mu-card-actions",
+                            [
+                              _vm.user.is_followed
+                                ? _c(
+                                    "mu-button",
+                                    {
+                                      staticClass: "border",
+                                      attrs: { flat: "" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.unfollowUser(_vm.user.username)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("دنبال نکن")]
+                                  )
+                                : _c(
+                                    "mu-button",
+                                    {
+                                      attrs: { color: "info" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.followUser(_vm.user.username)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("دنبال کن")]
+                                  )
+                            ],
+                            1
+                          )
+                        : _vm._e()
                     ],
                     1
                   )
@@ -19834,7 +19913,9 @@ var render = function() {
                           [
                             _c("mu-card-media", [
                               _c("img", {
-                                attrs: { src: "/storage/medias/" + f.file_path }
+                                attrs: {
+                                  src: "/storage/medias/" + f.thumb_path
+                                }
                               })
                             ]),
                             _vm._v(" "),
@@ -19857,19 +19938,11 @@ var render = function() {
                   : _vm._e(),
                 _vm._v(" "),
                 !_vm.medias.length && _vm.mediasRequestSent
-                  ? _c("div", [
-                      _vm._v(
-                        "\n                    رسانه ای برای نمایش وجود ندارد.\n                "
-                      )
-                    ])
+                  ? _c("div", [_vm._v("رسانه ای برای نمایش وجود ندارد.")])
                   : _vm._e(),
                 _vm._v(" "),
                 !_vm.medias.length && !_vm.mediasRequestSent
-                  ? _c("div", [
-                      _vm._v(
-                        "\n                    در حال بارگذاری رسانه ها\n                "
-                      )
-                    ])
+                  ? _c("div", [_vm._v("در حال بارگذاری رسانه ها")])
                   : _vm._e()
               ])
             ],
