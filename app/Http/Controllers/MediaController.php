@@ -131,7 +131,7 @@ class MediaController extends Controller
             if (!file_exists($save_path)) {
                 mkdir($save_path, 666, true);
             }
-            $img->save('public/storage/medias/thumbs/' . basename($file_path));
+            $img->save(storage_path('app/public/medias/thumbs/' . basename($file_path)));
         } catch (\Exception $e) {
             return response([
                 'ok'          => false,
