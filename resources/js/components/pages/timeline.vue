@@ -3,11 +3,11 @@
     <mu-card v-for="(f,index) in feeds">
       <mu-card-header :key="index" :title="f.user.first_name+ ' '+f.user.last_name">
         <mu-avatar slot="avatar">
-          <img src="f.user.profile">
+          <img :src="(f.user.profile != null) ? f.user.profile : '/img/profile.jpg'">
         </mu-avatar>
       </mu-card-header>
       <mu-card-media>
-        <img src="f.file_path">
+        <img :src="'/storage/medias/'+f.thumb_path">
       </mu-card-media>
       <mu-card-text>{{f.caption}}</mu-card-text>
       <mu-card-actions>

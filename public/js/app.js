@@ -18829,13 +18829,22 @@ var render = function() {
             },
             [
               _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
-                _c("img", { attrs: { src: "f.user.profile" } })
+                _c("img", {
+                  attrs: {
+                    src:
+                      f.user.profile != null
+                        ? f.user.profile
+                        : "/img/profile.jpg"
+                  }
+                })
               ])
             ],
             1
           ),
           _vm._v(" "),
-          _c("mu-card-media", [_c("img", { attrs: { src: "f.file_path" } })]),
+          _c("mu-card-media", [
+            _c("img", { attrs: { src: "/storage/medias/" + f.thumb_path } })
+          ]),
           _vm._v(" "),
           _c("mu-card-text", [_vm._v(_vm._s(f.caption))]),
           _vm._v(" "),

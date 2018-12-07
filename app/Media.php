@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Media extends Model
 {
@@ -17,6 +18,10 @@ class Media extends Model
         'updated_at'
     ];
 
+    protected $appends = [
+        'is_liked'
+    ];
+
     public function likes()
     {
         return $this->belongsToMany(User::class, 'medias_likes', 'media_id', 'user_id')
@@ -27,5 +32,13 @@ class Media extends Model
     public function user()
     {
         return $this->hasOne(User::class,'id','user_id');
+    }
+
+    public function getIsLikedAttribute()
+    {
+        return (bool) MediaLike::where('user_id', '=', Auth::id())
+            ->where('media_id', '=', $this->getAttribute('id'))
+            ->limit(1)
+            ->count();
     }
 }
