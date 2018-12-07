@@ -4,7 +4,7 @@
       <mu-text-field class="rtl" v-model="searchInput" label="جستوجو..." label-float @submit='search'></mu-text-field>
     </form>
     <div class="result">
-        <mu-card v-for="result, i in searchResult">
+        <mu-card v-for="(i,index) in searchResult" :key="index">
           <mu-card-header :title="result.username + ((result.profile_status !== 'PUBLIC') ? ' 🔒' : '')" :sub-title="result.first_name + ' ' + result.last_name">
             <mu-avatar slot="avatar">
               <img :src="result.profile" v-if="result.profile != null">

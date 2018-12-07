@@ -88,10 +88,14 @@ class MediaController extends Controller
         ], 403);
 
         try {
-            MediaLike::firstOrNew([
-                'user_id'  => Auth::user()->id,
-                'media_id' => $media->id
-            ]);
+            try{
+                MediaLike::create([
+                    'user_id'  => Auth::user()->id,
+                    'media_id' => $media->id
+                ]);
+            }catch(\Exception $e){
+                // lol
+            }
             return response([
                 'ok'          => true,
                 'status_code' => 200,
@@ -102,6 +106,47 @@ class MediaController extends Controller
                 'ok'          => false,
                 'status_code' => 500,
                 'description' => 'Internal error occurs when liking the media.'
+            ], 500);
+        }
+    }
+
+    public function disslikeUserMedia(Request $request)
+    {
+        $user = $request->get('user_object');
+        $result = User::checkUserViewPermission($user);
+        if (!empty($result)) return $result;
+
+        // check media ownership
+        try {
+            $media = Media::findOrFail((int)$request->route('id'));
+        } catch (\Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 400,
+                'description' => 'Wrong media id.'
+            ], 400);
+        }
+
+        if ($media->user_id !== $user->id) return response([
+            'ok'          => false,
+            'status_code' => 403,
+            'description' => 'Ownership of this media is not for the requested user.'
+        ], 403);
+
+        try {
+            MediaLike::whereUserId(Auth::user()->id)
+                ->whereMediaId($media->id)
+                ->delete();
+            return response([
+                'ok'          => true,
+                'status_code' => 200,
+                'description' => 'Post dissliked.'
+            ], 200);
+        } catch (Exception $e) {
+            return response([
+                'ok'          => false,
+                'status_code' => 500,
+                'description' => 'Internal error occurs when dissliking the media.' // test it
             ], 500);
         }
     }

@@ -157,8 +157,23 @@ Vue.mixin({
               return data.response.data;
             })
         },
-        isFollowingButtonText: function (bool) {
-            return bool ? "دنبال کردن" : "قطع دنبال کنندگی"
+        like: function (username,id) {
+            return Vue.axios.patch("api/" + username + "/media/" + id + "/like")
+            .then(function(data){
+                return data.data
+            }
+            ).catch(function(data){
+                return data.response.data
+            });
+        },
+        unLike: function (username,id) {
+            return Vue.axios.patch("api/" + username + "/media/" + id + "/disslike")
+            .then(function(data){
+                return data.data
+            }
+            ).catch(function(data){
+                return data.response.data
+            });
         }
     }
 });

@@ -3101,49 +3101,231 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      user: {},
-      medias: [],
-      mediasRequestSent: false
-    };
-  },
+    data: function data() {
+        var _this2 = this;
 
-  methods: {
-    getUser: function getUser() {
-      var _this = this;
+        return {
+            user: {},
+            medias: [],
+            mediasRequestSent: false,
+            openFullscreen: false,
+            openUserpicDialog: false,
+            selectedPost: {},
+            selectedFile: null,
+            saveSucceed: false,
+            saveError: false,
 
-      Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
-        return _this.user = resp.data;
-      });
-    },
-    getUserMedia: function getUserMedia() {
-      var _this2 = this;
+            editProfile: {
+                last_name: this.$auth.user().last_name,
+                first_name: this.$auth.user().first_name,
+                password: "",
+                password_confirm: "",
+                profile_status: this.getStatus(this.$auth.user().profile_status),
+                profile_photo: null
+            },
+            nameRules: [{
+                validate: function validate(val) {
+                    return !!val;
+                },
+                message: "این فیلد باید پر شود."
+            }],
+            passwordRules: [{
+                validate: function validate(val) {
+                    return !(val.length > 0 && val.length < 8);
+                },
+                message: "رمز عبور باید بیشتر از 8 کارکتر باشد"
+            }],
+            password_confirmRules: [{
+                validate: function validate(val) {
+                    return val == _this2.editProfile.password;
+                },
+                message: "رمزهای عبور مشابه وارد نشده اند."
+            }]
 
-      Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
-        _this2.medias = resp.data.data;
-        _this2.mediasRequestSent = true;
-      });
+        };
     },
-    followUser: function followUser(username) {
-      this.follow(username);
-      this.user.is_followed = true;
-      this.user.followers_count++;
+
+    methods: {
+        getUser: function getUser() {
+            var _this3 = this;
+
+            Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
+                return _this3.user = resp.data;
+            });
+        },
+        getUserMedia: function getUserMedia() {
+            var _this4 = this;
+
+            Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
+                _this4.medias = resp.data.data;
+                _this4.mediasRequestSent = true;
+            });
+        },
+        followUser: function followUser(username) {
+            this.follow(username);
+            this.user.is_followed = true;
+            this.user.followers_count++;
+        },
+        unfollowUser: function unfollowUser(username) {
+            this.unFollow(username);
+            this.user.is_followed = false;
+            this.user.followers_count--;
+        },
+        closeFullscreenDialog: function closeFullscreenDialog() {
+            this.openFullscreen = false;
+        },
+        openDialog: function openDialog(post, index) {
+            this.selectedPost = post;
+            this.selectedPost.index = index;
+            this.openFullscreen = true;
+        },
+        unLikePost: function unLikePost(id, index) {
+            this.unLike(this.$route.params.username, id);
+            this.medias[index].likes_count--;
+            this.medias[index].is_liked = false;
+        },
+        likePost: function likePost(id, index) {
+            this.like(this.$route.params.username, id);
+            this.medias[index].likes_count++;
+            this.medias[index].is_liked = true;
+        },
+        openFileUpload: function openFileUpload() {
+            this.openUserpicDialog = true;
+        },
+        onFileChanged: function onFileChanged(event) {
+
+            this.editProfile.profile_photo = event.target.files[0];
+            console.log(this.editProfile.profile_photo);
+        },
+        closeSimpleDialog: function closeSimpleDialog() {
+            this.openUserpicDialog = false;
+        },
+        getStatus: function getStatus(status) {
+            if (status == "PUBLIC") return false;else return true;
+        },
+        save: function save() {
+            var _this = this;
+            _this.saveError = false;
+            _this.saveSucceed = false;
+            this.$refs.form.validate().then(function (result) {
+                if (result) {
+                    var formData = new FormData();
+                    formData.append("first_name", _this.editProfile.first_name);
+                    if (_this.editProfile.profile_photo != null) formData.append("profile_photo", _this.editProfile.profile_photo, _this.editProfile.profile_photo.name);
+                    if (_this.editProfile.last_name.length) formData.append("last_name", _this.editProfile.last_name);
+                    if (_this.editProfile.profile_status) formData.append("profile_status", "PRIVATE");else formData.append("profile_status", "PUBLIC");
+                    if (_this.editProfile.password.length) {
+                        formData.append("password", _this.editProfile.password);
+                        formData.append("password_confirmation", _this.editProfile.password_confirm);
+                    }
+                    Vue.axios.post("/api/" + _this.$auth.user().username + "/edit", formData).then(function (resp) {
+                        _this.saveSucceed = true;
+                        _this.saveError = false;
+                        _this.$auth.fetch();
+                    }).catch(function (error) {
+                        _this.saveSucceed = false;
+                        _this.saveError = true;
+                    });
+                }
+            });
+        }
     },
-    unfollowUser: function unfollowUser(username) {
-      this.unFollow(username);
-      this.user.is_followed = false;
-      this.user.followers_count--;
+    created: function created() {
+        this.getUser();
+    },
+    mounted: function mounted() {
+        this.getUserMedia();
+    },
+    fileUploadClear: function fileUploadClear() {
+        var input = this.$refs.fileupload;
+        input.type = 'text';
+        input.type = 'file';
     }
-  },
-  created: function created() {
-    this.getUser();
-  },
-  mounted: function mounted() {
-    this.getUserMedia();
-  }
 });
 
 /***/ }),
@@ -3247,14 +3429,87 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      feeds: []
+      feeds: [],
+      openFullscreen: false,
+      selectedPost: {}
     };
   },
 
+  methods: {
+    unLikePost: function unLikePost(username, id, index) {
+      this.unLike(username, id);
+      this.feeds[index].likes_count--;
+      this.feeds[index].is_liked = false;
+    },
+    likePost: function likePost(username, id, index) {
+      this.like(username, id);
+      this.feeds[index].likes_count++;
+      this.feeds[index].is_liked = true;
+    },
+    closeFullscreenDialog: function closeFullscreenDialog() {
+      this.openFullscreen = false;
+    },
+    openDialog: function openDialog(post, index) {
+      this.selectedPost = post;
+      this.selectedPost.index = index;
+      this.openFullscreen = true;
+    }
+  },
   mounted: function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
       var _this, response;
@@ -18817,46 +19072,241 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "feedPosts" },
-    _vm._l(_vm.feeds, function(f, index) {
-      return _c(
-        "mu-card",
+    [
+      _vm._l(_vm.feeds, function(f, index) {
+        return _c(
+          "mu-card",
+          { key: index },
+          [
+            _c(
+              "mu-card-header",
+              {
+                key: index,
+                attrs: { title: f.user.first_name + " " + f.user.last_name }
+              },
+              [
+                _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
+                  _c("img", {
+                    attrs: {
+                      src:
+                        f.user.profile != null
+                          ? f.user.profile
+                          : "/img/profile.jpg"
+                    }
+                  })
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "mu-card-media",
+              [
+                _c(
+                  "mu-button",
+                  {
+                    staticClass: "showImageButton",
+                    attrs: { icon: "" },
+                    on: {
+                      click: function($event) {
+                        _vm.openDialog(f, index)
+                      }
+                    }
+                  },
+                  [_c("mu-icon", { attrs: { value: "remove_red_eye" } })],
+                  1
+                ),
+                _vm._v(" "),
+                _c("img", { attrs: { src: "/storage/medias/" + f.thumb_path } })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("mu-card-text", [_vm._v(_vm._s(f.caption))]),
+            _vm._v(" "),
+            _c(
+              "mu-card-actions",
+              [
+                f.is_liked
+                  ? _c(
+                      "mu-button",
+                      {
+                        attrs: { color: "error" },
+                        on: {
+                          click: function($event) {
+                            _vm.unLikePost(f.user.username, f.id, index)
+                          }
+                        }
+                      },
+                      [
+                        _c("mu-icon", {
+                          attrs: { right: "", value: "favorite" }
+                        }),
+                        _vm._v("پسندیدم\n      ")
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                !f.is_liked
+                  ? _c(
+                      "mu-button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.likePost(f.user.username, f.id, index)
+                          }
+                        }
+                      },
+                      [
+                        _c("mu-icon", {
+                          attrs: { right: "", value: "favorite_border" }
+                        }),
+                        _vm._v("میپسندم\n      ")
+                      ],
+                      1
+                    )
+                  : _vm._e()
+              ],
+              1
+            )
+          ],
+          1
+        )
+      }),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          attrs: {
+            width: "360",
+            transition: "slide-bottom",
+            fullscreen: "",
+            open: _vm.openFullscreen
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.openFullscreen = $event
+            }
+          }
+        },
         [
           _c(
-            "mu-card-header",
-            {
-              key: index,
-              attrs: { title: f.user.first_name + " " + f.user.last_name }
-            },
+            "mu-appbar",
+            { attrs: { color: "primary", title: "" } },
             [
-              _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
-                _c("img", {
-                  attrs: {
-                    src:
-                      f.user.profile != null
-                        ? f.user.profile
-                        : "/img/profile.jpg"
-                  }
-                })
-              ])
+              _c(
+                "mu-button",
+                {
+                  attrs: { slot: "right", icon: "" },
+                  on: { click: _vm.closeFullscreenDialog },
+                  slot: "right"
+                },
+                [_c("mu-icon", { attrs: { value: "close" } })],
+                1
+              )
             ],
             1
           ),
           _vm._v(" "),
-          _c("mu-card-media", [
-            _c("img", { attrs: { src: "/storage/medias/" + f.thumb_path } })
-          ]),
-          _vm._v(" "),
-          _c("mu-card-text", [_vm._v(_vm._s(f.caption))]),
-          _vm._v(" "),
           _c(
-            "mu-card-actions",
-            [_c("mu-button", { attrs: { flat: "" } }, [_vm._v("like")])],
+            "div",
+            { staticClass: "rtl", staticStyle: { padding: "24px" } },
+            [
+              _c("mu-container", [
+                _c("div", { staticClass: "imgOrg" }, [
+                  _c("img", {
+                    attrs: {
+                      src: "/storage/medias/" + _vm.selectedPost.file_path
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "detailsOrg" },
+                  [
+                    _c("mu-row", [
+                      _c("p", [_vm._v(_vm._s(_vm.selectedPost.caption))])
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("mu-row", [
+                      _c("span", [
+                        _vm._v(
+                          "تعداد لایک ها : " +
+                            _vm._s(_vm.selectedPost.likes_count)
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "mu-row",
+                      [
+                        _vm.selectedPost.is_liked
+                          ? _c(
+                              "mu-button",
+                              {
+                                attrs: { color: "error" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.unLikePost(
+                                      _vm.selectedPost.user.username,
+                                      _vm.selectedPost.id,
+                                      _vm.selectedPost.index
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("mu-icon", {
+                                  attrs: { right: "", value: "favorite" }
+                                }),
+                                _vm._v("پسندیدم\n            ")
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        !_vm.selectedPost.is_liked
+                          ? _c(
+                              "mu-button",
+                              {
+                                on: {
+                                  click: function($event) {
+                                    _vm.likePost(
+                                      _vm.selectedPost.user.username,
+                                      _vm.selectedPost.id,
+                                      _vm.selectedPost.index
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("mu-icon", {
+                                  attrs: { right: "", value: "favorite_border" }
+                                }),
+                                _vm._v("میپسندم\n            ")
+                              ],
+                              1
+                            )
+                          : _vm._e()
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ])
+            ],
             1
           )
         ],
         1
       )
-    })
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -19079,24 +19529,26 @@ var render = function() {
     _c(
       "div",
       { staticClass: "result" },
-      _vm._l(_vm.searchResult, function(result, i) {
+      _vm._l(_vm.searchResult, function(i, index) {
         return _c(
           "mu-card",
+          { key: index },
           [
             _c(
               "mu-card-header",
               {
                 attrs: {
                   title:
-                    result.username +
-                    (result.profile_status !== "PUBLIC" ? " 🔒" : ""),
-                  "sub-title": result.first_name + " " + result.last_name
+                    _vm.result.username +
+                    (_vm.result.profile_status !== "PUBLIC" ? " 🔒" : ""),
+                  "sub-title":
+                    _vm.result.first_name + " " + _vm.result.last_name
                 }
               },
               [
                 _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
-                  result.profile != null
-                    ? _c("img", { attrs: { src: result.profile } })
+                  _vm.result.profile != null
+                    ? _c("img", { attrs: { src: _vm.result.profile } })
                     : _c("img", { attrs: { src: "/img/profile.jpg" } })
                 ])
               ],
@@ -19105,16 +19557,18 @@ var render = function() {
             _vm._v(" "),
             _c("mu-card-text", [
               _vm._v(
-                "\n          دنبال‌کننده‌ها: " + _vm._s(result.followers_count)
+                "\n          دنبال‌کننده‌ها: " +
+                  _vm._s(_vm.result.followers_count)
               ),
               _c("br"),
               _vm._v(
-                "\n          دنبال‌شنوده‌ها: " + _vm._s(result.followings_count)
+                "\n          دنبال‌شنوده‌ها: " +
+                  _vm._s(_vm.result.followings_count)
               ),
               _c("br"),
               _vm._v(
                 "\n          پست‌ها: " +
-                  _vm._s(result.medias_count) +
+                  _vm._s(_vm.result.medias_count) +
                   "\n\n        "
               )
             ]),
@@ -19122,7 +19576,7 @@ var render = function() {
             _c(
               "mu-card-actions",
               [
-                result.is_followed
+                _vm.result.is_followed
                   ? _c(
                       "mu-button",
                       {
@@ -19788,37 +20242,77 @@ var render = function() {
                     "mu-col",
                     { attrs: { span: "12", sm: "6" } },
                     [
-                      _c(
-                        "mu-card-header",
-                        {
-                          staticClass: "profileHeader",
-                          attrs: {
-                            title:
-                              _vm.user.first_name + " " + _vm.user.last_name,
-                            "sub-title": _vm.user.username
-                          }
-                        },
-                        [
-                          _c(
-                            "mu-avatar",
+                      _vm.$auth.user().username != _vm.$route.params.username
+                        ? _c(
+                            "mu-card-header",
                             {
-                              attrs: { slot: "avatar", size: "100" },
-                              slot: "avatar"
+                              staticClass: "profileHeader",
+                              attrs: {
+                                title:
+                                  _vm.user.first_name +
+                                  " " +
+                                  _vm.user.last_name,
+                                "sub-title": _vm.user.username
+                              }
                             },
                             [
-                              _c("img", {
-                                attrs: {
-                                  src:
-                                    _vm.user.profile !== null
-                                      ? _vm.user.profile
-                                      : "/img/profile.jpg"
-                                }
-                              })
-                            ]
+                              _c(
+                                "mu-avatar",
+                                {
+                                  attrs: { slot: "avatar", size: "100" },
+                                  slot: "avatar"
+                                },
+                                [
+                                  _c("img", {
+                                    attrs: {
+                                      src:
+                                        _vm.user.profile !== null
+                                          ? _vm.user.profile
+                                          : "/img/profile.jpg"
+                                    }
+                                  })
+                                ]
+                              )
+                            ],
+                            1
                           )
-                        ],
-                        1
-                      )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.$auth.user().username == _vm.$route.params.username
+                        ? _c(
+                            "mu-card-header",
+                            {
+                              staticClass: "profileHeader",
+                              attrs: {
+                                title:
+                                  _vm.$auth.user().first_name +
+                                  " " +
+                                  _vm.$auth.user().last_name,
+                                "sub-title": _vm.$auth.user().username
+                              }
+                            },
+                            [
+                              _c(
+                                "mu-avatar",
+                                {
+                                  attrs: { slot: "avatar", size: "100" },
+                                  slot: "avatar"
+                                },
+                                [
+                                  _c("img", {
+                                    attrs: {
+                                      src:
+                                        _vm.$auth.user().profile !== null
+                                          ? _vm.$auth.user().profile
+                                          : "/img/profile.jpg"
+                                    }
+                                  })
+                                ]
+                              )
+                            ],
+                            1
+                          )
+                        : _vm._e()
                     ],
                     1
                   ),
@@ -19829,21 +20323,21 @@ var render = function() {
                     [
                       _c("mu-card-text", [
                         _vm._v(
-                          "\n            دنبال‌کننده‌ها: " +
+                          "\n                        دنبال‌کننده‌ها: " +
                             _vm._s(_vm.user.followers_count) +
-                            "\n            "
+                            "\n                        "
                         ),
                         _c("br"),
                         _vm._v(
-                          "\n            دنبال‌شنوده‌ها: " +
+                          "\n                        دنبال‌شنوده‌ها: " +
                             _vm._s(_vm.user.followings_count) +
-                            "\n            "
+                            "\n                        "
                         ),
                         _c("br"),
                         _vm._v(
-                          "\n            پست‌ها: " +
+                          "\n                        پست‌ها: " +
                             _vm._s(_vm.user.medias_count) +
-                            "\n          "
+                            "\n                    "
                         )
                       ]),
                       _vm._v(" "),
@@ -19853,11 +20347,12 @@ var render = function() {
                             "mu-card-actions",
                             [
                               _c(
-                                "router-link",
+                                "mu-button",
                                 {
-                                  attrs: {
-                                    tag: "mu-button",
-                                    to: "/editProfile"
+                                  on: {
+                                    click: function($event) {
+                                      _vm.openFileUpload()
+                                    }
                                   }
                                 },
                                 [_vm._v("ویرایش پروفایل")]
@@ -19884,7 +20379,11 @@ var render = function() {
                                         }
                                       }
                                     },
-                                    [_vm._v("دنبال نکن")]
+                                    [
+                                      _vm._v(
+                                        "دنبال\n                            نکن"
+                                      )
+                                    ]
                                   )
                                 : _c(
                                     "mu-button",
@@ -19915,7 +20414,7 @@ var render = function() {
                 _vm.medias.length > 0
                   ? _c(
                       "div",
-                      _vm._l(_vm.medias, function(f) {
+                      _vm._l(_vm.medias, function(f, index) {
                         return _c(
                           "mu-card",
                           { key: f.id },
@@ -19924,21 +20423,14 @@ var render = function() {
                               _c("img", {
                                 attrs: {
                                   src: "/storage/medias/" + f.thumb_path
+                                },
+                                on: {
+                                  click: function($event) {
+                                    _vm.openDialog(f, index)
+                                  }
                                 }
                               })
-                            ]),
-                            _vm._v(" "),
-                            _c("mu-card-text", [_vm._v(_vm._s(f.caption))]),
-                            _vm._v(" "),
-                            _c(
-                              "mu-card-actions",
-                              [
-                                _c("mu-button", { attrs: { flat: "" } }, [
-                                  _vm._v("like")
-                                ])
-                              ],
-                              1
-                            )
+                            ])
                           ],
                           1
                         )
@@ -19953,6 +20445,364 @@ var render = function() {
                 !_vm.medias.length && !_vm.mediasRequestSent
                   ? _c("div", [_vm._v("در حال بارگذاری رسانه ها")])
                   : _vm._e()
+              ])
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          staticClass: "rtl",
+          attrs: {
+            title: "ویرایش پروفایل",
+            width: "700",
+            open: _vm.openUserpicDialog
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.openUserpicDialog = $event
+            }
+          }
+        },
+        [
+          _c(
+            "mu-form",
+            {
+              ref: "form",
+              staticClass: "rtl",
+              attrs: { model: _vm.editProfile }
+            },
+            [
+              _c(
+                "mu-row",
+                { attrs: { gutter: "" } },
+                [
+                  _c(
+                    "mu-col",
+                    {
+                      attrs: {
+                        span: "12",
+                        sm: "12",
+                        md: "12",
+                        lg: "6",
+                        xl: "6"
+                      }
+                    },
+                    [
+                      _c(
+                        "mu-form-item",
+                        {
+                          attrs: {
+                            label: "نام",
+                            prop: "first_name",
+                            rules: _vm.nameRules
+                          }
+                        },
+                        [
+                          _c("mu-text-field", {
+                            attrs: { prop: "first_name" },
+                            model: {
+                              value: _vm.editProfile.first_name,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editProfile, "first_name", $$v)
+                              },
+                              expression: "editProfile.first_name"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "mu-form-item",
+                        { attrs: { label: "نام خانوادگی", prop: "last_name" } },
+                        [
+                          _c("mu-text-field", {
+                            attrs: { prop: "last_name" },
+                            model: {
+                              value: _vm.editProfile.last_name,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editProfile, "last_name", $$v)
+                              },
+                              expression: "editProfile.last_name"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "mu-form-item",
+                        { attrs: { label: "نوع صفحه" } },
+                        [
+                          _c("mu-checkbox", {
+                            attrs: {
+                              value: "lock",
+                              "uncheck-icon": "public",
+                              "checked-icon": "lock",
+                              label: _vm.editProfile.profileStatus
+                                ? "خصوصی"
+                                : "عمومی"
+                            },
+                            model: {
+                              value: _vm.editProfile.profileStatus,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editProfile, "profileStatus", $$v)
+                              },
+                              expression: "editProfile.profileStatus"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "mu-col",
+                    {
+                      attrs: {
+                        span: "12",
+                        sm: "12",
+                        md: "12",
+                        lg: "6",
+                        xl: "6"
+                      }
+                    },
+                    [
+                      _c(
+                        "mu-form-item",
+                        {
+                          attrs: {
+                            label: "رمزعبور",
+                            prop: "password",
+                            rules: _vm.passwordRules
+                          }
+                        },
+                        [
+                          _c("mu-text-field", {
+                            attrs: { type: "password", prop: "password" },
+                            model: {
+                              value: _vm.editProfile.password,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editProfile, "password", $$v)
+                              },
+                              expression: "editProfile.password"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "mu-form-item",
+                        {
+                          attrs: {
+                            label: "تکرار رمزعبور",
+                            prop: "password_confirm",
+                            rules: _vm.password_confirmRules
+                          }
+                        },
+                        [
+                          _c("mu-text-field", {
+                            attrs: {
+                              type: "password",
+                              prop: "password_confirm"
+                            },
+                            model: {
+                              value: _vm.editProfile.password_confirm,
+                              callback: function($$v) {
+                                _vm.$set(
+                                  _vm.editProfile,
+                                  "password_confirm",
+                                  $$v
+                                )
+                              },
+                              expression: "editProfile.password_confirm"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("mu-form-item", { attrs: { label: "عکس پروفایل" } }, [
+                        _c("input", {
+                          ref: "fileupload",
+                          attrs: { type: "file" },
+                          on: { change: _vm.onFileChanged }
+                        })
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.saveSucceed
+            ? _c("span", { staticClass: "mu-form-item__success right" }, [
+                _vm._v("پروفایل شما با موفقیت ویرایش شد.")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.saveError
+            ? _c("span", { staticClass: "mu-form-item__error right" }, [
+                _vm._v("مشکلی در ثبت اطلاعات رخ داده است.")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "mu-button",
+            {
+              attrs: { slot: "actions", flat: "", color: "primary" },
+              on: { click: _vm.save },
+              slot: "actions"
+            },
+            [_vm._v("ثبت\n        ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-button",
+            {
+              attrs: { slot: "actions", flat: "" },
+              on: { click: _vm.closeSimpleDialog },
+              slot: "actions"
+            },
+            [_vm._v("لغو")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          attrs: {
+            width: "360",
+            transition: "slide-bottom",
+            fullscreen: "",
+            open: _vm.openFullscreen
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.openFullscreen = $event
+            }
+          }
+        },
+        [
+          _c(
+            "mu-appbar",
+            { attrs: { color: "primary", title: "" } },
+            [
+              _c(
+                "mu-button",
+                {
+                  attrs: { slot: "right", icon: "" },
+                  on: { click: _vm.closeFullscreenDialog },
+                  slot: "right"
+                },
+                [_c("mu-icon", { attrs: { value: "close" } })],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "rtl", staticStyle: { padding: "24px" } },
+            [
+              _c("mu-container", [
+                _c("div", { staticClass: "imgOrg" }, [
+                  _c("img", {
+                    attrs: {
+                      src: "/storage/medias/" + _vm.selectedPost.file_path
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "detailsOrg" },
+                  [
+                    _c("mu-row", [
+                      _c("p", [_vm._v(_vm._s(_vm.selectedPost.caption))])
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("mu-row", [
+                      _c("span", [
+                        _vm._v(
+                          "تعداد لایک ها : " +
+                            _vm._s(_vm.selectedPost.likes_count)
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "mu-row",
+                      [
+                        _vm.selectedPost.is_liked
+                          ? _c(
+                              "mu-button",
+                              {
+                                attrs: { color: "error" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.unLikePost(
+                                      _vm.selectedPost.id,
+                                      _vm.selectedPost.index
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("mu-icon", {
+                                  attrs: { right: "", value: "favorite" }
+                                }),
+                                _vm._v("پسندیدم\n                        ")
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        !_vm.selectedPost.is_liked
+                          ? _c(
+                              "mu-button",
+                              {
+                                on: {
+                                  click: function($event) {
+                                    _vm.likePost(
+                                      _vm.selectedPost.id,
+                                      _vm.selectedPost.index
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("mu-icon", {
+                                  attrs: { right: "", value: "favorite_border" }
+                                }),
+                                _vm._v("میپسندم\n                        ")
+                              ],
+                              1
+                            )
+                          : _vm._e()
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
               ])
             ],
             1
@@ -35019,8 +35869,19 @@ Vue.mixin({
                 return data.response.data;
             });
         },
-        isFollowingButtonText: function isFollowingButtonText(bool) {
-            return bool ? "دنبال کردن" : "قطع دنبال کنندگی";
+        like: function like(username, id) {
+            return Vue.axios.patch("api/" + username + "/media/" + id + "/like").then(function (data) {
+                return data.data;
+            }).catch(function (data) {
+                return data.response.data;
+            });
+        },
+        unLike: function unLike(username, id) {
+            return Vue.axios.patch("api/" + username + "/media/" + id + "/disslike").then(function (data) {
+                return data.data;
+            }).catch(function (data) {
+                return data.response.data;
+            });
         }
     }
 });

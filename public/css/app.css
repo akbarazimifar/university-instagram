@@ -297,3 +297,27 @@ body {
   border: 1px solid gray;
 }
 
+.imgOrg,
+.imgOrg img {
+  width: 100%;
+}
+
+.medias img {
+  cursor: pointer;
+}
+
+.mu-button.showImageButton.mu-icon-button {
+  color: rgba(255, 255, 255, 0.8);
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
+
+.right {
+  float: right;
+}
+
+.mu-form-item__success {
+  color: #4caf50;
+}
+

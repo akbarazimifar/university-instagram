@@ -24,13 +24,14 @@ Route::middleware(['auth:api'])->group(function () {
 Route::middleware(['auth:api', 'username'])->group(function () {
     Route::prefix('{username}')->name('user.')->group(function () {
         Route::get('/', [\App\Http\Controllers\UserController::class, 'show'])->name('profile');
-        Route::patch('edit', [\App\Http\Controllers\UserController::class, 'edit'])->name('profile.edit');
+        Route::post('edit', [\App\Http\Controllers\UserController::class, 'edit'])->name('profile.edit');
 
         Route::get('medias', [\App\Http\Controllers\MediaController::class, 'getUserMedias'])->name('medias');
         Route::get('media/{id}', [\App\Http\Controllers\MediaController::class, 'getUserMedia'])->name('media')->where('id', '[0-9]+');
 
         Route::get('media/{id}/likes', [\App\Http\Controllers\MediaController::class, 'getUserMediaLikes'])->name('media.likes')->where('id', '[0-9]+');
         Route::patch('media/{id}/like', [\App\Http\Controllers\MediaController::class, 'likeUserMedia'])->name('media.like')->where('id', '[0-9]+');
+        Route::patch('media/{id}/disslike', [\App\Http\Controllers\MediaController::class, 'disslikeUserMedia'])->name('media.disslike')->where('id', '[0-9]+');
         Route::delete('media/{id}/delete', [\App\Http\Controllers\MediaController::class, 'delete'])->name('media.delete')->where('id', '[0-9]+');
         Route::patch('media/{id}/edit', [\App\Http\Controllers\MediaController::class, 'edit'])->name('media.edit')->where('id', '[0-9]+');
 
