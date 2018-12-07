@@ -227,7 +227,7 @@ class UserController extends Controller
             $img->fit(300, 300, function ($constraint) {
                 $constraint->upsize();
             });
-            $img->save('public/storage/profiles/thumbs/' . basename($file_path));
+            $img->save(storage_path('app/public/profiles/thumbs/' . basename($file_path)));
             $user_profile_data = [
                 'user_id'    => $user->id,
                 'thumb_path' => 'thumbs/' . basename($file_path),
