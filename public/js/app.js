@@ -2825,37 +2825,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            loaded: false
-        };
-    },
-    created: function created() {},
+  data: function data() {
+    return {
+      loaded: false
+    };
+  },
+  created: function created() {},
 
-    mounted: function mounted() {
-        //console.log(this.$auth.check());
-        if (!this.$auth.check()) {
-            Vue.router.push("login");
-        } else {
-            //Vue.router.push("feeds");
-            this.loaded = true;
-            //console.log(this.$auth.user())
-        }
-    },
-    methods: {
-        logout: function logout() {
-            this.$auth.logout({
-                makeRequest: true,
-                success: function success(data) {},
-                error: function error() {
-                    console.log('error ' + this.context);
-                }
-            });
-        }
+  mounted: function mounted() {
+    //console.log(this.$auth.check());
+    if (!this.$auth.check()) {
+      Vue.router.push("login");
+    } else {
+      //Vue.router.push("feeds");
+      this.loaded = true;
+      //console.log(this.$auth.user())
     }
-
+  },
+  methods: {
+    logout: function logout() {
+      this.$auth.logout({
+        makeRequest: true,
+        success: function success(data) {},
+        error: function error() {
+          console.log("error " + this.context);
+        }
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3184,148 +3195,167 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        var _this2 = this;
+  data: function data() {
+    var _this2 = this;
 
-        return {
-            user: {},
-            medias: [],
-            mediasRequestSent: false,
-            openFullscreen: false,
-            openUserpicDialog: false,
-            selectedPost: {},
-            selectedFile: null,
-            saveSucceed: false,
-            saveError: false,
+    return {
+      user: {},
+      medias: [],
+      mediasRequestSent: false,
+      openFullscreen: false,
+      openUserpicDialog: false,
+      selectedPost: {},
+      selectedFile: null,
+      saveSucceed: false,
+      saveError: false,
 
-            editProfile: {
-                last_name: this.$auth.user().last_name,
-                first_name: this.$auth.user().first_name,
-                password: "",
-                password_confirm: "",
-                profile_status: this.getStatus(this.$auth.user().profile_status),
-                profile_photo: null
-            },
-            nameRules: [{
-                validate: function validate(val) {
-                    return !!val;
-                },
-                message: "این فیلد باید پر شود."
-            }],
-            passwordRules: [{
-                validate: function validate(val) {
-                    return !(val.length > 0 && val.length < 8);
-                },
-                message: "رمز عبور باید بیشتر از 8 کارکتر باشد"
-            }],
-            password_confirmRules: [{
-                validate: function validate(val) {
-                    return val == _this2.editProfile.password;
-                },
-                message: "رمزهای عبور مشابه وارد نشده اند."
-            }]
+      editProfile: {
+        last_name: this.$auth.user().last_name,
+        first_name: this.$auth.user().first_name,
+        password: "",
+        password_confirm: "",
+        profile_status: this.getStatus(this.$auth.user().profile_status),
+        profile_photo: null
+      },
+      nameRules: [{
+        validate: function validate(val) {
+          return !!val;
+        },
+        message: "این فیلد باید پر شود."
+      }],
+      passwordRules: [{
+        validate: function validate(val) {
+          return !(val.length > 0 && val.length < 8);
+        },
+        message: "رمز عبور باید بیشتر از 8 کارکتر باشد"
+      }],
+      password_confirmRules: [{
+        validate: function validate(val) {
+          return val == _this2.editProfile.password;
+        },
+        message: "رمزهای عبور مشابه وارد نشده اند."
+      }]
+    };
+  },
 
-        };
+  methods: {
+    getUser: function getUser() {
+      var _this3 = this;
+
+      Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
+        return _this3.user = resp.data;
+      });
     },
+    getUserMedia: function getUserMedia() {
+      var _this4 = this;
 
-    methods: {
-        getUser: function getUser() {
-            var _this3 = this;
-
-            Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
-                return _this3.user = resp.data;
-            });
-        },
-        getUserMedia: function getUserMedia() {
-            var _this4 = this;
-
-            Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
-                _this4.medias = resp.data.data;
-                _this4.mediasRequestSent = true;
-            });
-        },
-        followUser: function followUser(username) {
-            this.follow(username);
-            this.user.is_followed = true;
-            this.user.followers_count++;
-        },
-        unfollowUser: function unfollowUser(username) {
-            this.unFollow(username);
-            this.user.is_followed = false;
-            this.user.followers_count--;
-        },
-        closeFullscreenDialog: function closeFullscreenDialog() {
-            this.openFullscreen = false;
-        },
-        openDialog: function openDialog(post, index) {
-            this.selectedPost = post;
-            this.selectedPost.index = index;
-            this.openFullscreen = true;
-        },
-        unLikePost: function unLikePost(id, index) {
-            this.unLike(this.$route.params.username, id);
-            this.medias[index].likes_count--;
-            this.medias[index].is_liked = false;
-        },
-        likePost: function likePost(id, index) {
-            this.like(this.$route.params.username, id);
-            this.medias[index].likes_count++;
-            this.medias[index].is_liked = true;
-        },
-        openFileUpload: function openFileUpload() {
-            this.openUserpicDialog = true;
-        },
-        onFileChanged: function onFileChanged(event) {
-
-            this.editProfile.profile_photo = event.target.files[0];
-            console.log(this.editProfile.profile_photo);
-        },
-        closeSimpleDialog: function closeSimpleDialog() {
-            this.openUserpicDialog = false;
-        },
-        getStatus: function getStatus(status) {
-            if (status == "PUBLIC") return false;else return true;
-        },
-        save: function save() {
-            var _this = this;
+      Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
+        _this4.medias = resp.data.data;
+        _this4.mediasRequestSent = true;
+      });
+    },
+    followUser: function followUser(username) {
+      this.follow(username);
+      this.user.is_followed = true;
+      this.user.followers_count++;
+    },
+    unfollowUser: function unfollowUser(username) {
+      this.unFollow(username);
+      this.user.is_followed = false;
+      this.user.followers_count--;
+    },
+    closeFullscreenDialog: function closeFullscreenDialog() {
+      this.openFullscreen = false;
+    },
+    openDialog: function openDialog(post, index) {
+      this.selectedPost = post;
+      this.selectedPost.index = index;
+      this.openFullscreen = true;
+    },
+    unLikePost: function unLikePost(id, index) {
+      this.unLike(this.$route.params.username, id);
+      this.medias[index].likes_count--;
+      this.medias[index].is_liked = false;
+    },
+    likePost: function likePost(id, index) {
+      this.like(this.$route.params.username, id);
+      this.medias[index].likes_count++;
+      this.medias[index].is_liked = true;
+    },
+    openFileUpload: function openFileUpload() {
+      this.openUserpicDialog = true;
+    },
+    onFileChanged: function onFileChanged(event) {
+      this.editProfile.profile_photo = event.target.files[0];
+      console.log(this.editProfile.profile_photo);
+    },
+    closeSimpleDialog: function closeSimpleDialog() {
+      this.openUserpicDialog = false;
+    },
+    getStatus: function getStatus(status) {
+      if (status == "PUBLIC") return false;else return true;
+    },
+    save: function save() {
+      var _this = this;
+      _this.saveError = false;
+      _this.saveSucceed = false;
+      this.$refs.form.validate().then(function (result) {
+        if (result) {
+          var formData = new FormData();
+          formData.append("first_name", _this.editProfile.first_name);
+          if (_this.editProfile.profile_photo != null) formData.append("profile_photo", _this.editProfile.profile_photo, _this.editProfile.profile_photo.name);
+          if (_this.editProfile.last_name.length) formData.append("last_name", _this.editProfile.last_name);
+          if (_this.editProfile.profile_status) formData.append("profile_status", "PRIVATE");else formData.append("profile_status", "PUBLIC");
+          if (_this.editProfile.password.length) {
+            formData.append("password", _this.editProfile.password);
+            formData.append("password_confirmation", _this.editProfile.password_confirm);
+          }
+          Vue.axios.post("/api/" + _this.$auth.user().username + "/edit", formData).then(function (resp) {
+            _this.saveSucceed = true;
             _this.saveError = false;
+            _this.$auth.fetch();
+          }).catch(function (error) {
             _this.saveSucceed = false;
-            this.$refs.form.validate().then(function (result) {
-                if (result) {
-                    var formData = new FormData();
-                    formData.append("first_name", _this.editProfile.first_name);
-                    if (_this.editProfile.profile_photo != null) formData.append("profile_photo", _this.editProfile.profile_photo, _this.editProfile.profile_photo.name);
-                    if (_this.editProfile.last_name.length) formData.append("last_name", _this.editProfile.last_name);
-                    if (_this.editProfile.profile_status) formData.append("profile_status", "PRIVATE");else formData.append("profile_status", "PUBLIC");
-                    if (_this.editProfile.password.length) {
-                        formData.append("password", _this.editProfile.password);
-                        formData.append("password_confirmation", _this.editProfile.password_confirm);
-                    }
-                    Vue.axios.post("/api/" + _this.$auth.user().username + "/edit", formData).then(function (resp) {
-                        _this.saveSucceed = true;
-                        _this.saveError = false;
-                        _this.$auth.fetch();
-                    }).catch(function (error) {
-                        _this.saveSucceed = false;
-                        _this.saveError = true;
-                    });
-                }
-            });
+            _this.saveError = true;
+          });
         }
-    },
-    created: function created() {
-        this.getUser();
-    },
-    mounted: function mounted() {
-        this.getUserMedia();
-    },
-    fileUploadClear: function fileUploadClear() {
-        var input = this.$refs.fileupload;
-        input.type = 'text';
-        input.type = 'file';
+      });
     }
+  },
+  created: function created() {
+    this.getUser();
+  },
+  mounted: function mounted() {
+    this.getUserMedia();
+  },
+  fileUploadClear: function fileUploadClear() {
+    var input = this.$refs.fileupload;
+    input.type = "text";
+    input.type = "file";
+  }
 });
 
 /***/ }),
@@ -3335,7 +3365,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -3411,9 +3440,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-//
-//
-//
 //
 //
 //
@@ -19090,7 +19116,7 @@ var render = function() {
                     attrs: {
                       src:
                         f.user.profile != null
-                          ? f.user.profile
+                          ? "/storage/profiles/" + f.user.profile.thumb_path
                           : "/img/profile.jpg"
                     }
                   })
@@ -19529,27 +19555,31 @@ var render = function() {
     _c(
       "div",
       { staticClass: "result" },
-      _vm._l(_vm.searchResult, function(i, index) {
+      _vm._l(_vm.searchResult, function(result, i) {
         return _c(
           "mu-card",
-          { key: index },
+          { key: i + 1 },
           [
             _c(
               "mu-card-header",
               {
                 attrs: {
                   title:
-                    _vm.result.username +
-                    (_vm.result.profile_status !== "PUBLIC" ? " 🔒" : ""),
-                  "sub-title":
-                    _vm.result.first_name + " " + _vm.result.last_name
+                    result.username +
+                    (result.profile_status !== "PUBLIC" ? " 🔒" : ""),
+                  "sub-title": result.first_name + " " + result.last_name
                 }
               },
               [
                 _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
-                  _vm.result.profile != null
-                    ? _c("img", { attrs: { src: _vm.result.profile } })
-                    : _c("img", { attrs: { src: "/img/profile.jpg" } })
+                  _c("img", {
+                    attrs: {
+                      src:
+                        result.profile !== null
+                          ? "/storage/profiles/" + result.profile.thumb_path
+                          : "/img/profile.jpg"
+                    }
+                  })
                 ])
               ],
               1
@@ -19557,18 +19587,16 @@ var render = function() {
             _vm._v(" "),
             _c("mu-card-text", [
               _vm._v(
-                "\n          دنبال‌کننده‌ها: " +
-                  _vm._s(_vm.result.followers_count)
+                "\n          دنبال‌کننده‌ها: " + _vm._s(result.followers_count)
               ),
               _c("br"),
               _vm._v(
-                "\n          دنبال‌شنوده‌ها: " +
-                  _vm._s(_vm.result.followings_count)
+                "\n          دنبال‌شنوده‌ها: " + _vm._s(result.followings_count)
               ),
               _c("br"),
               _vm._v(
                 "\n          پست‌ها: " +
-                  _vm._s(_vm.result.medias_count) +
+                  _vm._s(result.medias_count) +
                   "\n\n        "
               )
             ]),
@@ -19576,7 +19604,7 @@ var render = function() {
             _c(
               "mu-card-actions",
               [
-                _vm.result.is_followed
+                result.is_followed
                   ? _c(
                       "mu-button",
                       {
@@ -19602,9 +19630,20 @@ var render = function() {
                       [_vm._v("دنبال کن")]
                     ),
                 _vm._v(" "),
-                _c("mu-button", { attrs: { flat: "" } }, [
-                  _vm._v("مشاهده پروفایل")
-                ])
+                _c(
+                  "mu-button",
+                  {
+                    staticClass: "inline-table",
+                    attrs: {
+                      flat: "",
+                      to: {
+                        name: "profile",
+                        params: { username: result.username }
+                      }
+                    }
+                  },
+                  [_vm._v("مشاهده پروفایل")]
+                )
               ],
               1
             )
@@ -19656,7 +19695,15 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "profileSelction" }, [
-                _c("img", { attrs: { src: "/img/profile.jpg" } }),
+                _c("img", {
+                  attrs: {
+                    src:
+                      _vm.$auth.user().profile !== null
+                        ? "/storage/profiles/" +
+                          _vm.$auth.user().profile.thumb_path
+                        : "/img/profile.jpg"
+                  }
+                }),
                 _vm._v(" "),
                 _c("h2", [
                   _vm._v(
@@ -19772,6 +19819,50 @@ var render = function() {
                 1
               )
             ]
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-container",
+            { staticClass: "RespAppbar rtl" },
+            [
+              _c(
+                "mu-bottom-nav",
+                [
+                  _c("mu-bottom-nav-item", {
+                    attrs: {
+                      title: "جدیدترین رسانه ها",
+                      icon: "home",
+                      to: "/feeds"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("mu-bottom-nav-item", {
+                    attrs: { title: "جستجو", icon: "search", to: "/search" }
+                  }),
+                  _vm._v(" "),
+                  _c("mu-bottom-nav-item", {
+                    attrs: {
+                      title: "آپلود رسانه",
+                      icon: "cloud_upload",
+                      to: "/upload"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("mu-bottom-nav-item", {
+                    attrs: {
+                      title: "پروفایل",
+                      icon: "person",
+                      to: {
+                        name: "profile",
+                        params: { username: this.$auth.user().username }
+                      }
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
           )
         ],
         1
@@ -20267,7 +20358,8 @@ var render = function() {
                                     attrs: {
                                       src:
                                         _vm.user.profile !== null
-                                          ? _vm.user.profile
+                                          ? "/storage/profiles/" +
+                                            _vm.user.profile.thumb_path
                                           : "/img/profile.jpg"
                                     }
                                   })
@@ -20303,7 +20395,8 @@ var render = function() {
                                     attrs: {
                                       src:
                                         _vm.$auth.user().profile !== null
-                                          ? _vm.$auth.user().profile
+                                          ? "/storage/profiles/" +
+                                            _vm.$auth.user().profile.thumb_path
                                           : "/img/profile.jpg"
                                     }
                                   })
@@ -20323,21 +20416,21 @@ var render = function() {
                     [
                       _c("mu-card-text", [
                         _vm._v(
-                          "\n                        دنبال‌کننده‌ها: " +
+                          "\n            دنبال‌کننده‌ها: " +
                             _vm._s(_vm.user.followers_count) +
-                            "\n                        "
+                            "\n            "
                         ),
                         _c("br"),
                         _vm._v(
-                          "\n                        دنبال‌شنوده‌ها: " +
+                          "\n            دنبال‌شنوده‌ها: " +
                             _vm._s(_vm.user.followings_count) +
-                            "\n                        "
+                            "\n            "
                         ),
                         _c("br"),
                         _vm._v(
-                          "\n                        پست‌ها: " +
+                          "\n            پست‌ها: " +
                             _vm._s(_vm.user.medias_count) +
-                            "\n                    "
+                            "\n          "
                         )
                       ]),
                       _vm._v(" "),
@@ -20381,7 +20474,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "دنبال\n                            نکن"
+                                        "\n              دنبال\n              نکن\n            "
                                       )
                                     ]
                                   )
@@ -20666,7 +20759,7 @@ var render = function() {
               on: { click: _vm.save },
               slot: "actions"
             },
-            [_vm._v("ثبت\n        ")]
+            [_vm._v("ثبت")]
           ),
           _vm._v(" "),
           _c(
@@ -20769,7 +20862,7 @@ var render = function() {
                                 _c("mu-icon", {
                                   attrs: { right: "", value: "favorite" }
                                 }),
-                                _vm._v("پسندیدم\n                        ")
+                                _vm._v("پسندیدم\n            ")
                               ],
                               1
                             )
@@ -20792,7 +20885,7 @@ var render = function() {
                                 _c("mu-icon", {
                                   attrs: { right: "", value: "favorite_border" }
                                 }),
-                                _vm._v("میپسندم\n                        ")
+                                _vm._v("میپسندم\n            ")
                               ],
                               1
                             )

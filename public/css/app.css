@@ -244,9 +244,21 @@ body {
   display: inline-block;
 }
 
+.RespAppbar {
+  display: none;
+  height: 60px;
+  position: absolute;
+  bottom: 0;
+  min-width: 100vw;
+}
+
 @media screen and (max-width: 990px) {
   .sidebar {
     display: none;
+  }
+
+  .RespAppbar {
+    display: block;
   }
 }
 
@@ -319,5 +331,9 @@ body {
 
 .mu-form-item__success {
   color: #4caf50;
+}
+
+.inline-table {
+  display: inline-table;
 }
 

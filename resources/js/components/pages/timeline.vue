@@ -3,7 +3,7 @@
     <mu-card v-for="(f,index) in feeds" :key="index">
       <mu-card-header :key="index" :title="f.user.first_name+ ' '+f.user.last_name">
         <mu-avatar slot="avatar">
-          <img :src="(f.user.profile != null) ? f.user.profile : '/img/profile.jpg'">
+          <img :src="(f.user.profile != null) ? '/storage/profiles/'+f.user.profile.thumb_path : '/img/profile.jpg'">
         </mu-avatar>
       </mu-card-header>
       <mu-card-media>
@@ -11,9 +11,6 @@
           <mu-icon value="remove_red_eye"></mu-icon>
         </mu-button>
         <img :src="'/storage/medias/'+f.thumb_path">
-
-        
-
       </mu-card-media>
       <mu-card-text>{{f.caption}}</mu-card-text>
       <mu-card-actions>
