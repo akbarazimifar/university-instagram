@@ -2837,6 +2837,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3216,14 +3227,116 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _this2 = this;
 
     return {
+      showFollowersList: false,
+      showFollowingList: false,
+      refreshing: false,
       user: {},
+      followersPage: 0,
+      followingPage: 0,
       medias: [],
+      followersListMembers: [],
+      followingListMembers: [],
+      loading: false,
       mediasRequestSent: false,
       openFullscreen: false,
       openUserpicDialog: false,
@@ -3231,7 +3344,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       selectedFile: null,
       saveSucceed: false,
       saveError: false,
-
       editProfile: {
         last_name: this.$auth.user().last_name,
         first_name: this.$auth.user().first_name,
@@ -3262,19 +3374,49 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
-    getUser: function getUser() {
+    loadFollowersList: function loadFollowersList() {
       var _this3 = this;
 
+      this.loading = true;
+      var _this = this;
+      Vue.axios.get("/api/" + this.$route.params.username + "/followers", {
+        page: this.followersPage + 1
+      }).then(function (resp) {
+        _this.followersPage++;
+        _this.loading = false;
+        resp.data.data.filter(function (element) {
+          _this3.followersListMembers.push(element);
+        });
+      });
+    },
+    loadFollowingList: function loadFollowingList() {
+      var _this4 = this;
+
+      this.loading = true;
+      var _this = this;
+      Vue.axios.get("/api/" + this.$route.params.username + "/followings", {
+        page: this.followingPage + 1
+      }).then(function (resp) {
+        _this.followingPage++;
+        _this.loading = false;
+        resp.data.data.filter(function (element) {
+          _this4.followingListMembers.push(element);
+        });
+      });
+    },
+    getUser: function getUser() {
+      var _this5 = this;
+
       Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
-        return _this3.user = resp.data;
+        return _this5.user = resp.data;
       });
     },
     getUserMedia: function getUserMedia() {
-      var _this4 = this;
+      var _this6 = this;
 
       Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
-        _this4.medias = resp.data.data;
-        _this4.mediasRequestSent = true;
+        _this6.medias = resp.data.data;
+        _this6.mediasRequestSent = true;
       });
     },
     followUser: function followUser(username) {
@@ -3349,7 +3491,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.getUser();
   },
   mounted: function mounted() {
+    this.getUser();
     this.getUserMedia();
+    this.loadFollowersList();
+    this.loadFollowingList();
+  },
+
+  watch: {
+    "$route.params.username": function $routeParamsUsername() {
+      this.showFollowersList = false;
+      this.showFollowingList = false;
+      this.followersListMembers = [];
+      this.followingListMembers = [];
+      this.followersPage = 0;
+      this.followingPage = 0;
+      this.getUser();
+      this.getUserMedia();
+      this.loadFollowersList();
+      this.loadFollowingList();
+    }
   },
   fileUploadClear: function fileUploadClear() {
     var input = this.$refs.fileupload;
@@ -19808,6 +19968,32 @@ var render = function() {
                               )
                             ],
                             1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "mu-list-item",
+                            {
+                              attrs: { button: "", ripple: true },
+                              on: {
+                                click: function($event) {
+                                  _vm.$auth.logout()
+                                }
+                              }
+                            },
+                            [
+                              _c("mu-list-item-title", [_vm._v("خـروج")]),
+                              _vm._v(" "),
+                              _c(
+                                "mu-list-item-action",
+                                [
+                                  _c("mu-icon", {
+                                    attrs: { value: "power_settings_new" }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
                           )
                         ],
                         1
@@ -19855,6 +20041,15 @@ var render = function() {
                       to: {
                         name: "profile",
                         params: { username: this.$auth.user().username }
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("mu-bottom-nav-item", {
+                    attrs: { title: "خـروج", icon: "power_settings_new" },
+                    on: {
+                      click: function($event) {
+                        _vm.$auth.logout()
                       }
                     }
                   })
@@ -20357,6 +20552,8 @@ var render = function() {
                                   _c("img", {
                                     attrs: {
                                       src:
+                                        typeof _vm.user.profile !==
+                                          "undefined" &&
                                         _vm.user.profile !== null
                                           ? "/storage/profiles/" +
                                             _vm.user.profile.thumb_path
@@ -20414,25 +20611,57 @@ var render = function() {
                     "mu-col",
                     { attrs: { span: "12", sm: "6" } },
                     [
-                      _c("mu-card-text", [
-                        _vm._v(
-                          "\n            دنبال‌کننده‌ها: " +
-                            _vm._s(_vm.user.followers_count) +
-                            "\n            "
-                        ),
-                        _c("br"),
-                        _vm._v(
-                          "\n            دنبال‌شنوده‌ها: " +
-                            _vm._s(_vm.user.followings_count) +
-                            "\n            "
-                        ),
-                        _c("br"),
-                        _vm._v(
-                          "\n            پست‌ها: " +
-                            _vm._s(_vm.user.medias_count) +
-                            "\n          "
-                        )
-                      ]),
+                      _c(
+                        "mu-card-text",
+                        [
+                          _c(
+                            "mu-button",
+                            {
+                              attrs: { flat: "", color: "primary" },
+                              on: {
+                                click: function($event) {
+                                  _vm.showFollowersList = true
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "دنبال‌کننده‌ها: " +
+                                  _vm._s(_vm.user.followers_count)
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("br"),
+                          _vm._v(" "),
+                          _c(
+                            "mu-button",
+                            {
+                              attrs: { flat: "", color: "primary" },
+                              on: {
+                                click: function($event) {
+                                  _vm.showFollowingList = true
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "دنبال‌شنوده‌ها: " +
+                                  _vm._s(_vm.user.followings_count)
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("br"),
+                          _vm._v(" "),
+                          _c(
+                            "mu-button",
+                            { attrs: { flat: "", ripple: false } },
+                            [_vm._v("پست‌ها: " + _vm._s(_vm.user.medias_count))]
+                          )
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       _vm.user.username != undefined &&
                       _vm.$route.params.username == _vm.$auth.user().username
@@ -20515,7 +20744,10 @@ var render = function() {
                             _c("mu-card-media", [
                               _c("img", {
                                 attrs: {
-                                  src: "/storage/medias/" + f.thumb_path
+                                  src:
+                                    f !== null
+                                      ? "/storage/medias/" + f.thumb_path
+                                      : "/img/profile.jpg"
                                 },
                                 on: {
                                   click: function($event) {
@@ -20899,6 +21131,218 @@ var render = function() {
               ])
             ],
             1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          staticClass: "followerLists",
+          attrs: {
+            title: "لیست دنبال کننده ها",
+            width: "360",
+            scrollable: "",
+            open: _vm.showFollowersList
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.showFollowersList = $event
+            }
+          }
+        },
+        [
+          _c(
+            "mu-load-more",
+            {
+              attrs: {
+                loading: _vm.loading,
+                "loading-text": "در حال بارگذاری"
+              },
+              on: { load: _vm.loadFollowersList }
+            },
+            [
+              _c(
+                "mu-list",
+                [
+                  _vm._l(_vm.followersListMembers, function(i) {
+                    return [
+                      _c(
+                        "mu-list-item",
+                        {
+                          staticStyle: { direction: "rtl" },
+                          attrs: {
+                            avatar: "",
+                            button: "",
+                            ripple: false,
+                            to: {
+                              name: "profile",
+                              params: { username: i.username }
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "mu-list-item-action",
+                            [
+                              _c("mu-avatar", [
+                                _c("img", {
+                                  attrs: {
+                                    src:
+                                      i.profile != null
+                                        ? "/storage/profiles/" +
+                                          i.profile.thumb_path
+                                        : "/img/profile.jpg"
+                                  }
+                                })
+                              ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("mu-list-item-title", [
+                            _vm._v(_vm._s(i.first_name + " " + i.last_name))
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("mu-divider")
+                    ]
+                  }),
+                  _vm._v(" "),
+                  _vm.loading == false && _vm.followersListMembers.length == 0
+                    ? [
+                        _c("p", { staticClass: "notfound" }, [
+                          _vm._v("هیج کاربری سافت نشد")
+                        ])
+                      ]
+                    : _vm._e()
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-button",
+            {
+              attrs: { slot: "actions", flat: "", color: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.showFollowersList = !_vm.showFollowersList
+                }
+              },
+              slot: "actions"
+            },
+            [_vm._v("برگشت")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          staticClass: "followerLists",
+          attrs: {
+            title: "لیست دنبال‌شونده ها",
+            width: "360",
+            scrollable: "",
+            open: _vm.showFollowingList
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.showFollowingList = $event
+            }
+          }
+        },
+        [
+          _c(
+            "mu-load-more",
+            {
+              attrs: {
+                loading: _vm.loading,
+                "loading-text": "در حال بارگذاری"
+              },
+              on: { load: _vm.loadFollowingList }
+            },
+            [
+              _c(
+                "mu-list",
+                [
+                  _vm._l(_vm.followingListMembers, function(i) {
+                    return [
+                      _c(
+                        "mu-list-item",
+                        {
+                          staticStyle: { direction: "rtl" },
+                          attrs: {
+                            avatar: "",
+                            button: "",
+                            ripple: false,
+                            to: {
+                              name: "profile",
+                              params: { username: i.username }
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "mu-list-item-action",
+                            [
+                              _c("mu-avatar", [
+                                _c("img", {
+                                  attrs: {
+                                    src:
+                                      i.profile != null
+                                        ? "/storage/profiles/" +
+                                          i.profile.thumb_path
+                                        : "/img/profile.jpg"
+                                  }
+                                })
+                              ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("mu-list-item-title", [_vm._v(_vm._s(i.username))])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("mu-divider")
+                    ]
+                  }),
+                  _vm._v(" "),
+                  _vm.loading == false && _vm.followingListMembers.length == 0
+                    ? [
+                        _c("p", { staticClass: "notfound" }, [
+                          _vm._v("هیج کاربری سافت نشد")
+                        ])
+                      ]
+                    : _vm._e()
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-button",
+            {
+              attrs: { slot: "actions", flat: "", color: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.showFollowingList = !_vm.showFollowingList
+                }
+              },
+              slot: "actions"
+            },
+            [_vm._v("برگشت")]
           )
         ],
         1
@@ -35921,8 +36365,17 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
         redirect: '/home',
         fetchUser: true
     },
-    fetchData: { url: '/api/user/self', method: 'GET', enabled: true },
-    logoutData: { url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true },
+    fetchData: {
+        url: '/api/user/self',
+        method: 'GET',
+        enabled: true
+    },
+    logoutData: {
+        url: '/api/logout',
+        method: 'POST',
+        redirect: '/login',
+        makeRequest: true
+    },
     registerData: {
         url: '/api/register',
         method: 'POST'

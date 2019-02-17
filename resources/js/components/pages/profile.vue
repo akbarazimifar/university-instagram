@@ -11,7 +11,9 @@
               :sub-title="user.username"
             >
               <mu-avatar slot="avatar" size="100">
-                <img :src="(user.profile !== null) ? '/storage/profiles/'+user.profile.thumb_path : '/img/profile.jpg'">
+                <img
+                  :src="(typeof user.profile !== 'undefined' && user.profile !== null) ? '/storage/profiles/'+user.profile.thumb_path : '/img/profile.jpg'"
+                >
               </mu-avatar>
             </mu-card-header>
 
@@ -30,11 +32,19 @@
           </mu-col>
           <mu-col span="12" sm="6">
             <mu-card-text>
-              دنبال‌کننده‌ها: {{user.followers_count}}
+              <mu-button
+                flat
+                color="primary"
+                @click="showFollowersList = true"
+              >دنبال‌کننده‌ها: {{user.followers_count}}</mu-button>
               <br>
-              دنبال‌شنوده‌ها: {{user.followings_count}}
+              <mu-button
+                flat
+                color="primary"
+                @click="showFollowingList = true"
+              >دنبال‌شنوده‌ها: {{user.followings_count}}</mu-button>
               <br>
-              پست‌ها: {{user.medias_count}}
+              <mu-button flat :ripple="false">پست‌ها: {{user.medias_count}}</mu-button>
             </mu-card-text>
             <mu-card-actions
               v-if="user.username != undefined  && $route.params.username == $auth.user().username"
@@ -63,7 +73,10 @@
           <div v-if="medias.length > 0">
             <mu-card v-for="(f, index) in medias" :key="f.id">
               <mu-card-media>
-                <img :src="'/storage/medias/' + f.thumb_path" @click="openDialog(f,index)">
+                <img
+                  :src="(f !== null)?'/storage/medias/' + f.thumb_path : '/img/profile.jpg'"
+                  @click="openDialog(f,index)"
+                >
               </mu-card-media>
             </mu-card>
           </div>
@@ -159,6 +172,87 @@
         </mu-container>
       </div>
     </mu-dialog>
+    <mu-dialog
+      title="لیست دنبال کننده ها"
+      width="360"
+      scrollable
+      :open.sync="showFollowersList"
+      class="followerLists"
+    >
+      <mu-load-more :loading="loading" @load="loadFollowersList" loading-text="در حال بارگذاری">
+        <mu-list>
+          <template v-for="i in followersListMembers">
+            <mu-list-item
+              avatar
+              button
+              :ripple="false"
+              style="direction:rtl;"
+              :to="{name : 'profile',params :{username : i.username}}"
+            >
+              <mu-list-item-action>
+                <mu-avatar>
+                  <img
+                    :src="(i.profile != null) ? '/storage/profiles/'+i.profile.thumb_path : '/img/profile.jpg'"
+                  >
+                </mu-avatar>
+              </mu-list-item-action>
+              <mu-list-item-title>{{i.first_name+" "+i.last_name}}</mu-list-item-title>
+            </mu-list-item>
+            <mu-divider/>
+          </template>
+          <template v-if="loading==false && followersListMembers.length==0">
+            <p class="notfound">هیج کاربری سافت نشد</p>
+          </template>
+        </mu-list>
+      </mu-load-more>
+      <mu-button
+        slot="actions"
+        flat
+        color="primary"
+        @click="showFollowersList = !showFollowersList"
+      >برگشت</mu-button>
+    </mu-dialog>
+
+    <mu-dialog
+      title="لیست دنبال‌شونده ها"
+      width="360"
+      scrollable
+      :open.sync="showFollowingList"
+      class="followerLists"
+    >
+      <mu-load-more :loading="loading" @load="loadFollowingList" loading-text="در حال بارگذاری">
+        <mu-list>
+          <template v-for="i in followingListMembers">
+            <mu-list-item
+              avatar
+              button
+              :ripple="false"
+              style="direction:rtl;"
+              :to="{name : 'profile',params :{username : i.username}}"
+            >
+              <mu-list-item-action>
+                <mu-avatar>
+                  <img
+                    :src="(i.profile != null) ? '/storage/profiles/'+i.profile.thumb_path : '/img/profile.jpg'"
+                  >
+                </mu-avatar>
+              </mu-list-item-action>
+              <mu-list-item-title>{{i.username}}</mu-list-item-title>
+            </mu-list-item>
+            <mu-divider/>
+          </template>
+          <template v-if="loading==false && followingListMembers.length==0">
+            <p class="notfound">هیج کاربری سافت نشد</p>
+          </template>
+        </mu-list>
+      </mu-load-more>
+      <mu-button
+        slot="actions"
+        flat
+        color="primary"
+        @click="showFollowingList = !showFollowingList"
+      >برگشت</mu-button>
+    </mu-dialog>
   </div>
 </template>
 
@@ -166,8 +260,16 @@
 export default {
   data() {
     return {
+      showFollowersList: false,
+      showFollowingList: false,
+      refreshing: false,
       user: {},
+      followersPage: 0,
+      followingPage: 0,
       medias: [],
+      followersListMembers: [],
+      followingListMembers: [],
+      loading: false,
       mediasRequestSent: false,
       openFullscreen: false,
       openUserpicDialog: false,
@@ -175,7 +277,6 @@ export default {
       selectedFile: null,
       saveSucceed: false,
       saveError: false,
-
       editProfile: {
         last_name: this.$auth.user().last_name,
         first_name: this.$auth.user().first_name,
@@ -205,6 +306,36 @@ export default {
     };
   },
   methods: {
+    loadFollowersList() {
+      this.loading = true;
+      let _this = this;
+      Vue.axios
+        .get("/api/" + this.$route.params.username + "/followers", {
+          page: this.followersPage + 1
+        })
+        .then(resp => {
+          _this.followersPage++;
+          _this.loading = false;
+          resp.data.data.filter(element => {
+            this.followersListMembers.push(element);
+          });
+        });
+    },
+    loadFollowingList() {
+      this.loading = true;
+      let _this = this;
+      Vue.axios
+        .get("/api/" + this.$route.params.username + "/followings", {
+          page: this.followingPage + 1
+        })
+        .then(resp => {
+          _this.followingPage++;
+          _this.loading = false;
+          resp.data.data.filter(element => {
+            this.followingListMembers.push(element);
+          });
+        });
+    },
     getUser() {
       Vue.axios
         .get("/api/" + this.$route.params.username + "/.")
@@ -305,7 +436,24 @@ export default {
     this.getUser();
   },
   mounted() {
+    this.getUser();
     this.getUserMedia();
+    this.loadFollowersList();
+    this.loadFollowingList();
+  },
+  watch: {
+    "$route.params.username": function() {
+      this.showFollowersList = false;
+      this.showFollowingList = false;
+      this.followersListMembers = [];
+      this.followingListMembers = [];
+      this.followersPage = 0;
+      this.followingPage = 0;
+      this.getUser();
+      this.getUserMedia();
+      this.loadFollowersList();
+      this.loadFollowingList();
+    }
   },
   fileUploadClear() {
     const input = this.$refs.fileupload;

@@ -24,23 +24,23 @@ Vue.router = new VueRouter({
             auth: true,
         },
         children: [{
-            path: '/feeds',
-            name: 'feeds',
-            component: require('./components/pages/timeline.vue')
-        }, {
-            path: '/search',
-            name: 'search',
-            component: require('./components/pages/search.vue')
-        }, {
-            path: '/u/:username',
-            name: 'profile',
-            component: require('./components/pages/profile.vue')
-        }, {
-            path: '/upload',
-            name: 'upload',
-            component: require('./components/pages/upload.vue')
-        }
-        
+                path: '/feeds',
+                name: 'feeds',
+                component: require('./components/pages/timeline.vue')
+            }, {
+                path: '/search',
+                name: 'search',
+                component: require('./components/pages/search.vue')
+            }, {
+                path: '/u/:username',
+                name: 'profile',
+                component: require('./components/pages/profile.vue')
+            }, {
+                path: '/upload',
+                name: 'upload',
+                component: require('./components/pages/upload.vue')
+            }
+
         ]
     }, {
         path: '/login',
@@ -110,8 +110,17 @@ Vue.use(require('@websanova/vue-auth'), {
         redirect: '/home',
         fetchUser: true
     },
-    fetchData: {url: '/api/user/self', method: 'GET', enabled: true},
-    logoutData: {url: '/api/user/logout', method: 'POST', redirect: '/login', makeRequest: true},
+    fetchData: {
+        url: '/api/user/self',
+        method: 'GET',
+        enabled: true
+    },
+    logoutData: {
+        url: '/api/logout',
+        method: 'POST',
+        redirect: '/login',
+        makeRequest: true
+    },
     registerData: {
         url: '/api/register',
         method: 'POST'
@@ -141,39 +150,36 @@ Vue.mixin({
     methods: {
         follow: function (username) {
             return Vue.axios.patch("/api/" + username + "/follow")
-            .then(function(data){
-                return data.data
-            }
-            ).catch(function(data){
-                return data.response.data
-            });
+                .then(function (data) {
+                    return data.data
+                }).catch(function (data) {
+                    return data.response.data
+                });
         },
         unFollow: function (username) {
-          return Vue.axios.patch("/api/" + username + "/unfollow")
-            .then(function(data){
-              return data.data
-            })
-            .catch(function(data) {
-              return data.response.data;
-            })
+            return Vue.axios.patch("/api/" + username + "/unfollow")
+                .then(function (data) {
+                    return data.data
+                })
+                .catch(function (data) {
+                    return data.response.data;
+                })
         },
-        like: function (username,id) {
+        like: function (username, id) {
             return Vue.axios.patch("api/" + username + "/media/" + id + "/like")
-            .then(function(data){
-                return data.data
-            }
-            ).catch(function(data){
-                return data.response.data
-            });
+                .then(function (data) {
+                    return data.data
+                }).catch(function (data) {
+                    return data.response.data
+                });
         },
-        unLike: function (username,id) {
+        unLike: function (username, id) {
             return Vue.axios.patch("api/" + username + "/media/" + id + "/disslike")
-            .then(function(data){
-                return data.data
-            }
-            ).catch(function(data){
-                return data.response.data
-            });
+                .then(function (data) {
+                    return data.data
+                }).catch(function (data) {
+                    return data.response.data
+                });
         }
     }
 });

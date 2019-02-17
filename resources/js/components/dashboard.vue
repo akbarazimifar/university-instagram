@@ -41,17 +41,28 @@
                 <mu-icon value="person"></mu-icon>
               </mu-list-item-action>
             </mu-list-item>
+            <mu-list-item button :ripple="true" @click="$auth.logout()">
+              <mu-list-item-title>خـروج</mu-list-item-title>
+              <mu-list-item-action>
+                <mu-icon value="power_settings_new"></mu-icon>
+              </mu-list-item-action>
+            </mu-list-item>
           </mu-list>
         </mu-paper>
       </div>
     </mu-col>
 
     <mu-container class="RespAppbar rtl">
-      <mu-bottom-nav >
+      <mu-bottom-nav>
         <mu-bottom-nav-item title="جدیدترین رسانه ها" icon="home" to="/feeds"></mu-bottom-nav-item>
         <mu-bottom-nav-item title="جستجو" icon="search" to="/search"></mu-bottom-nav-item>
         <mu-bottom-nav-item title="آپلود رسانه" icon="cloud_upload" to="/upload"></mu-bottom-nav-item>
-        <mu-bottom-nav-item title="پروفایل" icon="person" :to="{name:'profile', params:{username: this.$auth.user().username}}"></mu-bottom-nav-item>
+        <mu-bottom-nav-item
+          title="پروفایل"
+          icon="person"
+          :to="{name:'profile', params:{username: this.$auth.user().username}}"
+        ></mu-bottom-nav-item>
+        <mu-bottom-nav-item title="خـروج" icon="power_settings_new" @click="$auth.logout()"></mu-bottom-nav-item>
       </mu-bottom-nav>
     </mu-container>
   </mu-row>

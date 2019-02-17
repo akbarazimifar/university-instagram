@@ -337,3 +337,14 @@ body {
   display: inline-table;
 }
 
+.followerLists {
+  font-family: "IranSans-Light";
+}
+
+.followerLists .mu-dialog-title,
+.followerLists .mu-item-title,
+.followerLists .notfound {
+  direction: rtl;
+  text-align: right;
+}
+
