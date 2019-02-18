@@ -46,7 +46,7 @@ class MediaController extends Controller
         if (!empty($result)) return $result;
         try {
             $result = MediaLike::whereMediaId((int)$request->route('id'))
-                ->whereUserId($user->id)
+                // ->whereUserId($user->id)
                 ->with(['user', 'user.profile'])
                 ->get();
             if (empty($result->toArray())) return response([
