@@ -151,7 +151,13 @@
             </mu-row>
             <br>
             <mu-row>
-              <span>تعداد لایک ها : {{selectedPost.likes_count}}</span>
+              <span>
+                <mu-button
+                  flat
+                  color="primary"
+                  @click="loadLikesList"
+                >تعداد لایک ها : {{selectedPost.likes_count}}</mu-button>
+              </span>
             </mu-row>
             <mu-row>
               <mu-button
@@ -201,7 +207,7 @@
             <mu-divider/>
           </template>
           <template v-if="loading==false && followersListMembers.length==0">
-            <p class="notfound">هیج کاربری سافت نشد</p>
+            <p class="notfound">هیج کاربری یافت نشد</p>
           </template>
         </mu-list>
       </mu-load-more>
@@ -242,7 +248,7 @@
             <mu-divider/>
           </template>
           <template v-if="loading==false && followingListMembers.length==0">
-            <p class="notfound">هیج کاربری سافت نشد</p>
+            <p class="notfound">هیج کاربری یافت نشد</p>
           </template>
         </mu-list>
       </mu-load-more>
@@ -253,6 +259,41 @@
         @click="showFollowingList = !showFollowingList"
       >برگشت</mu-button>
     </mu-dialog>
+    <mu-dialog
+      title="لیست افرادی که پسندیدند"
+      width="360"
+      scrollable
+      :open.sync="showLikesList"
+      class="followerLists"
+    >
+      <mu-load-more :loading="loading" @load="loadLikesList" loading-text="در حال بارگذاری">
+        <mu-list>
+          <template v-for="i in likesListMembers">
+            <mu-list-item
+              avatar
+              button
+              :ripple="false"
+              style="direction:rtl;"
+              :to="{name : 'profile',params :{username : i.username}}"
+            >
+              <mu-list-item-action>
+                <mu-avatar>
+                  <img
+                    :src="(i.profile != null) ? '/storage/profiles/'+i.profile.thumb_path : '/img/profile.jpg'"
+                  >
+                </mu-avatar>
+              </mu-list-item-action>
+              <mu-list-item-title>{{i.first_name +" "+i.last_name}}</mu-list-item-title>
+            </mu-list-item>
+            <mu-divider/>
+          </template>
+          <template v-if="loading==false && likesListMembers.length==0">
+            <p class="notfound">هیج کاربری یافت نشد</p>
+          </template>
+        </mu-list>
+      </mu-load-more>
+      <mu-button slot="actions" flat color="primary" @click="showLikesList = !showLikesList">برگشت</mu-button>
+    </mu-dialog>
   </div>
 </template>
 
@@ -260,14 +301,17 @@
 export default {
   data() {
     return {
+      showLikesList: false,
       showFollowersList: false,
       showFollowingList: false,
       refreshing: false,
       user: {},
       followersPage: 0,
       followingPage: 0,
+      likesPage: 0,
       medias: [],
       followersListMembers: [],
+      likesListMembers: [],
       followingListMembers: [],
       loading: false,
       mediasRequestSent: false,
@@ -336,6 +380,31 @@ export default {
           });
         });
     },
+    loadLikesList() {
+      this.showLikesList = true;
+      this.loading = true;
+      let _this = this;
+      Vue.axios
+        .get(
+          "/api/" +
+            this.$route.params.username +
+            "/media/" +
+            this.selectedPost.id +
+            "/likes",
+          {
+            page: this.likesPage + 1
+          }
+        )
+        .then(resp => {
+          _this.likesPage++;
+          _this.loading = false;
+          if (typeof resp.data[0].user_id !== "undefined") {
+            resp.data.filter(element => {
+              this.likesListMembers.push(element.user);
+            });
+          }
+        });
+    },
     getUser() {
       Vue.axios
         .get("/api/" + this.$route.params.username + "/.")
@@ -360,6 +429,8 @@ export default {
       this.user.followers_count--;
     },
     closeFullscreenDialog() {
+      this.likesListMembers = [];
+      this.likesPage = 0;
       this.openFullscreen = false;
     },
     openDialog(post, index) {
@@ -368,11 +439,13 @@ export default {
       this.openFullscreen = true;
     },
     unLikePost(id, index) {
+      this.likesListMembers = [];
       this.unLike(this.$route.params.username, id);
       this.medias[index].likes_count--;
       this.medias[index].is_liked = false;
     },
     likePost(id, index) {
+      this.likesListMembers = [];
       this.like(this.$route.params.username, id);
       this.medias[index].likes_count++;
       this.medias[index].is_liked = true;

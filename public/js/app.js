@@ -3321,20 +3321,64 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _this2 = this;
 
     return {
+      showLikesList: false,
       showFollowersList: false,
       showFollowingList: false,
       refreshing: false,
       user: {},
       followersPage: 0,
       followingPage: 0,
+      likesPage: 0,
       medias: [],
       followersListMembers: [],
+      likesListMembers: [],
       followingListMembers: [],
       loading: false,
       mediasRequestSent: false,
@@ -3404,19 +3448,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         });
       });
     },
-    getUser: function getUser() {
+    loadLikesList: function loadLikesList() {
       var _this5 = this;
 
+      this.showLikesList = true;
+      this.loading = true;
+      var _this = this;
+      Vue.axios.get("/api/" + this.$route.params.username + "/media/" + this.selectedPost.id + "/likes", {
+        page: this.likesPage + 1
+      }).then(function (resp) {
+        _this.likesPage++;
+        _this.loading = false;
+        if (typeof resp.data[0].user_id !== "undefined") {
+          resp.data.filter(function (element) {
+            _this5.likesListMembers.push(element.user);
+          });
+        }
+      });
+    },
+    getUser: function getUser() {
+      var _this6 = this;
+
       Vue.axios.get("/api/" + this.$route.params.username + "/.").then(function (resp) {
-        return _this5.user = resp.data;
+        return _this6.user = resp.data;
       });
     },
     getUserMedia: function getUserMedia() {
-      var _this6 = this;
+      var _this7 = this;
 
       Vue.axios.get("/api/" + this.$route.params.username + "/medias").then(function (resp) {
-        _this6.medias = resp.data.data;
-        _this6.mediasRequestSent = true;
+        _this7.medias = resp.data.data;
+        _this7.mediasRequestSent = true;
       });
     },
     followUser: function followUser(username) {
@@ -3430,6 +3492,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.user.followers_count--;
     },
     closeFullscreenDialog: function closeFullscreenDialog() {
+      this.likesListMembers = [];
+      this.likesPage = 0;
       this.openFullscreen = false;
     },
     openDialog: function openDialog(post, index) {
@@ -3438,11 +3502,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.openFullscreen = true;
     },
     unLikePost: function unLikePost(id, index) {
+      this.likesListMembers = [];
       this.unLike(this.$route.params.username, id);
       this.medias[index].likes_count--;
       this.medias[index].is_liked = false;
     },
     likePost: function likePost(id, index) {
+      this.likesListMembers = [];
       this.like(this.$route.params.username, id);
       this.medias[index].likes_count++;
       this.medias[index].is_liked = true;
@@ -3666,28 +3732,97 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       feeds: [],
       openFullscreen: false,
-      selectedPost: {}
+      selectedPost: {},
+      showLikesList: false,
+      loading: false,
+      likesListMembers: [],
+      likesPage: 0
     };
   },
 
   methods: {
+    loadLikesList: function loadLikesList() {
+      var _this2 = this;
+
+      this.showLikesList = true;
+      this.loading = true;
+      var _this = this;
+      Vue.axios.get("/api/" + this.selectedPost.user.username + "/media/" + this.selectedPost.id + "/likes", {
+        page: this.likesPage + 1
+      }).then(function (resp) {
+        _this.likesPage++;
+        _this.loading = false;
+        if (typeof resp.data[0].user_id !== "undefined") {
+          resp.data.filter(function (element) {
+            _this2.likesListMembers.push(element.user);
+          });
+        }
+      });
+    },
     unLikePost: function unLikePost(username, id, index) {
+      this.likesListMembers = [];
       this.unLike(username, id);
       this.feeds[index].likes_count--;
       this.feeds[index].is_liked = false;
     },
     likePost: function likePost(username, id, index) {
+      this.likesListMembers = [];
       this.like(username, id);
       this.feeds[index].likes_count++;
       this.feeds[index].is_liked = true;
     },
     closeFullscreenDialog: function closeFullscreenDialog() {
+      this.likesListMembers = [];
+      this.likesPage = 0;
       this.openFullscreen = false;
     },
     openDialog: function openDialog(post, index) {
@@ -19419,12 +19554,25 @@ var render = function() {
                     _c("br"),
                     _vm._v(" "),
                     _c("mu-row", [
-                      _c("span", [
-                        _vm._v(
-                          "تعداد لایک ها : " +
-                            _vm._s(_vm.selectedPost.likes_count)
-                        )
-                      ])
+                      _c(
+                        "span",
+                        [
+                          _c(
+                            "mu-button",
+                            {
+                              attrs: { flat: "", color: "primary" },
+                              on: { click: _vm.loadLikesList }
+                            },
+                            [
+                              _vm._v(
+                                "تعداد لایک ها : " +
+                                  _vm._s(_vm.selectedPost.likes_count)
+                              )
+                            ]
+                          )
+                        ],
+                        1
+                      )
                     ]),
                     _vm._v(" "),
                     _c(
@@ -19487,6 +19635,113 @@ var render = function() {
               ])
             ],
             1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          staticClass: "followerLists",
+          attrs: {
+            title: "لیست افرادی که پسندیدند",
+            width: "360",
+            scrollable: "",
+            open: _vm.showLikesList
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.showLikesList = $event
+            }
+          }
+        },
+        [
+          _c(
+            "mu-load-more",
+            {
+              attrs: {
+                loading: _vm.loading,
+                "loading-text": "در حال بارگذاری"
+              },
+              on: { load: _vm.loadLikesList }
+            },
+            [
+              _c(
+                "mu-list",
+                [
+                  _vm._l(_vm.likesListMembers, function(i) {
+                    return [
+                      _c(
+                        "mu-list-item",
+                        {
+                          staticStyle: { direction: "rtl" },
+                          attrs: {
+                            avatar: "",
+                            button: "",
+                            ripple: false,
+                            to: {
+                              name: "profile",
+                              params: { username: i.username }
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "mu-list-item-action",
+                            [
+                              _c("mu-avatar", [
+                                _c("img", {
+                                  attrs: {
+                                    src:
+                                      i.profile != null
+                                        ? "/storage/profiles/" +
+                                          i.profile.thumb_path
+                                        : "/img/profile.jpg"
+                                  }
+                                })
+                              ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("mu-list-item-title", [
+                            _vm._v(_vm._s(i.first_name + " " + i.last_name))
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("mu-divider")
+                    ]
+                  }),
+                  _vm._v(" "),
+                  _vm.loading == false && _vm.likesListMembers.length == 0
+                    ? [
+                        _c("p", { staticClass: "notfound" }, [
+                          _vm._v("هیج کاربری یافت نشد")
+                        ])
+                      ]
+                    : _vm._e()
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-button",
+            {
+              attrs: { slot: "actions", flat: "", color: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.showLikesList = !_vm.showLikesList
+                }
+              },
+              slot: "actions"
+            },
+            [_vm._v("برگشت")]
           )
         ],
         1
@@ -21065,12 +21320,25 @@ var render = function() {
                     _c("br"),
                     _vm._v(" "),
                     _c("mu-row", [
-                      _c("span", [
-                        _vm._v(
-                          "تعداد لایک ها : " +
-                            _vm._s(_vm.selectedPost.likes_count)
-                        )
-                      ])
+                      _c(
+                        "span",
+                        [
+                          _c(
+                            "mu-button",
+                            {
+                              attrs: { flat: "", color: "primary" },
+                              on: { click: _vm.loadLikesList }
+                            },
+                            [
+                              _vm._v(
+                                "تعداد لایک ها : " +
+                                  _vm._s(_vm.selectedPost.likes_count)
+                              )
+                            ]
+                          )
+                        ],
+                        1
+                      )
                     ]),
                     _vm._v(" "),
                     _c(
@@ -21215,7 +21483,7 @@ var render = function() {
                   _vm.loading == false && _vm.followersListMembers.length == 0
                     ? [
                         _c("p", { staticClass: "notfound" }, [
-                          _vm._v("هیج کاربری سافت نشد")
+                          _vm._v("هیج کاربری یافت نشد")
                         ])
                       ]
                     : _vm._e()
@@ -21320,7 +21588,7 @@ var render = function() {
                   _vm.loading == false && _vm.followingListMembers.length == 0
                     ? [
                         _c("p", { staticClass: "notfound" }, [
-                          _vm._v("هیج کاربری سافت نشد")
+                          _vm._v("هیج کاربری یافت نشد")
                         ])
                       ]
                     : _vm._e()
@@ -21338,6 +21606,113 @@ var render = function() {
               on: {
                 click: function($event) {
                   _vm.showFollowingList = !_vm.showFollowingList
+                }
+              },
+              slot: "actions"
+            },
+            [_vm._v("برگشت")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "mu-dialog",
+        {
+          staticClass: "followerLists",
+          attrs: {
+            title: "لیست افرادی که پسندیدند",
+            width: "360",
+            scrollable: "",
+            open: _vm.showLikesList
+          },
+          on: {
+            "update:open": function($event) {
+              _vm.showLikesList = $event
+            }
+          }
+        },
+        [
+          _c(
+            "mu-load-more",
+            {
+              attrs: {
+                loading: _vm.loading,
+                "loading-text": "در حال بارگذاری"
+              },
+              on: { load: _vm.loadLikesList }
+            },
+            [
+              _c(
+                "mu-list",
+                [
+                  _vm._l(_vm.likesListMembers, function(i) {
+                    return [
+                      _c(
+                        "mu-list-item",
+                        {
+                          staticStyle: { direction: "rtl" },
+                          attrs: {
+                            avatar: "",
+                            button: "",
+                            ripple: false,
+                            to: {
+                              name: "profile",
+                              params: { username: i.username }
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "mu-list-item-action",
+                            [
+                              _c("mu-avatar", [
+                                _c("img", {
+                                  attrs: {
+                                    src:
+                                      i.profile != null
+                                        ? "/storage/profiles/" +
+                                          i.profile.thumb_path
+                                        : "/img/profile.jpg"
+                                  }
+                                })
+                              ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("mu-list-item-title", [
+                            _vm._v(_vm._s(i.first_name + " " + i.last_name))
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("mu-divider")
+                    ]
+                  }),
+                  _vm._v(" "),
+                  _vm.loading == false && _vm.likesListMembers.length == 0
+                    ? [
+                        _c("p", { staticClass: "notfound" }, [
+                          _vm._v("هیج کاربری یافت نشد")
+                        ])
+                      ]
+                    : _vm._e()
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "mu-button",
+            {
+              attrs: { slot: "actions", flat: "", color: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.showLikesList = !_vm.showLikesList
                 }
               },
               slot: "actions"
@@ -36260,87 +36635,87 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__("./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
 window.client_id = 2;
-window.client_secret = 'G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo'; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
-//window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v 
+window.client_secret = "G8OQhWqLj2CC9V1Wn8YbXwdCZNJAsODIDuM8QNMo"; // Nariman To Az In Estefade kon :| Hamin line o uncomment kon
+//window.client_secret = 'ekcBhRGW7JIfSMFxZ6Tz1lVAw9gXIzNTC90EGFrO'; // Manam az in Estefade mikonam :v
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]);
 Vue.use(__webpack_require__("./node_modules/vue-axios/dist/vue-axios.min.js"), __webpack_require__("./node_modules/axios/index.js"));
-Vue.axios.defaults.baseURL = 'http://localhost:8000/';
+Vue.axios.defaults.baseURL = "http://localhost:8000/";
 Vue.router = __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */];
 Vue.use(__webpack_require__("./node_modules/muse-ui/dist/muse-ui.esm.js"));
-Vue.axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+Vue.axios.defaults.headers.common["X-CSRF-TOKEN"] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
 Vue.router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
-    mode: 'history',
+    mode: "history",
     routes: [{
-        path: '/',
-        name: 'default',
+        path: "/",
+        name: "default",
         component: __webpack_require__("./resources/js/components/dashboard.vue"),
         meta: {
             auth: true
         },
         children: [{
-            path: '/feeds',
-            name: 'feeds',
+            path: "/feeds",
+            name: "feeds",
             component: __webpack_require__("./resources/js/components/pages/timeline.vue")
         }, {
-            path: '/search',
-            name: 'search',
+            path: "/search",
+            name: "search",
             component: __webpack_require__("./resources/js/components/pages/search.vue")
         }, {
-            path: '/u/:username',
-            name: 'profile',
+            path: "/u/:username",
+            name: "profile",
             component: __webpack_require__("./resources/js/components/pages/profile.vue")
         }, {
-            path: '/upload',
-            name: 'upload',
+            path: "/upload",
+            name: "upload",
             component: __webpack_require__("./resources/js/components/pages/upload.vue")
         }]
     }, {
-        path: '/login',
-        name: 'login',
+        path: "/login",
+        name: "login",
         component: __webpack_require__("./resources/js/components/login.vue"),
         meta: {
             auth: false
         }
     }, {
-        path: '/register',
-        name: 'register',
+        path: "/register",
+        name: "register",
         component: __webpack_require__("./resources/js/components/register.vue"),
         meta: {
             auth: false
         }
     }, {
-        path: '/404',
-        name: 'notFound',
+        path: "/404",
+        name: "notFound",
         component: __webpack_require__("./resources/js/components/404.vue")
     }, {
-        path: '*',
-        name: 'toNotFound',
-        redirect: '/404'
+        path: "*",
+        name: "toNotFound",
+        redirect: "/404"
     }]
 });
 
 Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), {
     auth: {
         request: function request(req, token) {
-            var refresh = req.url.indexOf('token') > -1;
+            var refresh = req.url.indexOf("token") > -1;
             if (refresh) {
                 if (req["grant_type"] === "password") refresh = false;
             }
-            token = token.split(';');
+            token = token.split(";");
             if (!refresh) {
                 token = token[0];
-                req.headers['Authorization'] = 'Bearer ' + token;
-                req.headers['Accept'] = 'application/json';
+                req.headers["Authorization"] = "Bearer " + token;
+                req.headers["Accept"] = "application/json";
             } else {
                 token = token[1];
                 req.data = {
-                    'refresh_token': token,
-                    'grant_type': 'refresh_token',
+                    refresh_token: token,
+                    grant_type: "refresh_token",
                     client_id: window.client_id,
                     client_secret: window.client_secret
                 };
@@ -36349,7 +36724,7 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
         response: function response(res) {
             if (res.data.access_token && res.data.refresh_token) {
                 {
-                    return res.data.access_token + ';' + res.data.refresh_token;
+                    return res.data.access_token + ";" + res.data.refresh_token;
                 }
             }
         }
@@ -36360,39 +36735,39 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
     http: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/http/axios.1.x.js"),
     router: __webpack_require__("./node_modules/@websanova/vue-auth/drivers/router/vue-router.2.x.js"),
     loginData: {
-        url: '/oauth/token',
-        method: 'POST',
-        redirect: '/home',
+        url: "/oauth/token",
+        method: "POST",
+        redirect: "/home",
         fetchUser: true
     },
     fetchData: {
-        url: '/api/user/self',
-        method: 'GET',
+        url: "/api/user/self",
+        method: "GET",
         enabled: true
     },
     logoutData: {
-        url: '/api/logout',
-        method: 'POST',
-        redirect: '/login',
+        url: "/api/logout",
+        method: "POST",
+        redirect: "/login",
         makeRequest: true
     },
     registerData: {
-        url: '/api/register',
-        method: 'POST'
+        url: "/api/register",
+        method: "POST"
     },
     refreshData: {
-        url: '/oauth/token',
-        method: 'POST',
+        url: "/oauth/token",
+        method: "POST",
         enabled: true,
         interval: 15
     },
     forbiddenRedirect: {
-        path: '/404'
+        path: "/404"
     },
     notFoundRedirect: {
-        path: '/404'
+        path: "/404"
     },
-    tokenStore: ['localStorage', 'cookie']
+    tokenStore: ["localStorage", "cookie"]
 });
 window.$ = function (peyload) {
     return document.querySelector(peyload);
