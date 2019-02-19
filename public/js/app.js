@@ -3430,7 +3430,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.loading = true;
       var _this = this;
       Vue.axios.get("/api/" + this.$route.params.username + "/followers", {
-        page: this.followersPage + 1
+        params: {
+          page: this.followersPage + 1
+        }
       }).then(function (resp) {
         _this.followersPage = _this.followersPage + 1;
         _this.loading = false;
@@ -3445,7 +3447,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.loading = true;
       var _this = this;
       Vue.axios.get("/api/" + this.$route.params.username + "/followings", {
-        page: this.followingPage + 1
+        params: {
+          page: this.followingPage + 1
+        }
       }).then(function (resp) {
         _this.followingPage = _this.followingPage + 1;
         _this.loading = false;
@@ -3462,7 +3466,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.loading = true;
       var _this = this;
       Vue.axios.get("/api/" + this.$route.params.username + "/media/" + this.selectedPost.id + "/likes", {
-        page: this.likesPage + 1
+        params: {
+          page: this.likesPage + 1
+        }
       }).then(function (resp) {
         _this.likesPage = _this.likesPage + 1;
         _this.loading = false;
@@ -3830,7 +3836,9 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
       this.loading = true;
       var _this = this;
       Vue.axios.get("/api/" + this.selectedPost.user.username + "/media/" + this.selectedPost.id + "/likes", {
-        page: this.likesPage + 1
+        params: {
+          page: this.likesPage + 1
+        }
       }).then(function (resp) {
         _this.likesPage = _this.likesPage + 1;
         _this.loading = false;
