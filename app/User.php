@@ -61,7 +61,9 @@ class User extends Authenticatable
             ->limit(1)
             ->count();
     }
-
+    public function findForPassport($identifier) {
+        return $this->orWhere('email', $identifier)->orWhere('username', $identifier)->first();
+    }
     public static function checkUserViewPermission(User $user)
     {
         if ($user->profile_status === "PRIVATE" && Auth::user()->id !== $user->id) {

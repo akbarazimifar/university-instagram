@@ -6,7 +6,7 @@
       </mu-row>
       <mu-row>
         <label for="fileUpload">انتخاب عکس</label>
-        <input type="file" ref="fileupload" @change="onFileChanged">
+        <input type="file" ref="fileupload" @change="onFileChanged" accept="image/*">
         <div class="mu-form-item__error mu-form" v-if="fileError">{{fileError}}</div>
       </mu-row>
       <mu-row>
@@ -77,11 +77,11 @@ export default {
         this.fileError = "عکسی انتخاب نشده است.";
       }
     },
-    fileUploadClear () {
-      	const input = this.$refs.fileupload;
-        input.type = 'text';
-        input.type = 'file';
-        this.caption = "";
+    fileUploadClear() {
+      const input = this.$refs.fileupload;
+      input.type = "text";
+      input.type = "file";
+      this.caption = "";
     }
   }
 };

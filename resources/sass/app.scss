@@ -270,3 +270,13 @@ body {
     direction: rtl;
     text-align: right;
 }
+
+.mu-dialog-wrapper.postDialog {
+    max-height: 100%;
+    overflow: scroll;
+    background-color: #fff;
+}
+
+.mu-dialog {
+    box-shadow: none;
+}

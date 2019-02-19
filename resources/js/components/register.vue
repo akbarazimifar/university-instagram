@@ -1,68 +1,82 @@
 <template>
-    <mu-container class="demo-container">
-        <mu-row gutter>
-            <mu-col span="12" sm="12" md="12" lg="8" xl="8" class="maginAuto">
-                <mu-card class='rtl loginCard'>
-                    <mu-card-title title="ثبت نام" sub-title="برای ثبت نام تمام فیلد های زیر را تکمیل کنید"></mu-card-title>
-                    <mu-card-text>
-                        <mu-form ref="form" :model="data.body" class="rtl">
-                          <mu-row gutter>
-                              <mu-col span="12" sm="12" md="12" lg="6" xl="6">
-                                <mu-form-item label="نام" prop="first_name" :rules="nameRules">
-                                <mu-text-field v-model="data.body.first_name" prop="first_name"></mu-text-field>
-                            </mu-form-item>
-                            <mu-form-item label="نام خانوادگی" prop="last_name" :rules="nameRules">
-                                <mu-text-field v-model="data.body.last_name" prop="last_name"></mu-text-field>
-                            </mu-form-item>
-                            <mu-form-item label="نام کاربری" prop="username" :rules="nameRules">
-                                <mu-text-field v-model="data.body.username" prop="username"></mu-text-field>
-                            </mu-form-item>
-                              </mu-col>
-                              <mu-col span="12" sm="12" md="12" lg="6" xl="6">
-                                <mu-form-item label="ایمیل" prop="email" :rules="usernameRules">
-                                <mu-text-field v-model="data.body.email" prop="email"></mu-text-field>
-                            </mu-form-item>
-                            <mu-form-item label="رمزعبور" prop="password" :rules="passwordRules">
-                                <mu-text-field type="password" v-model="data.body.password" prop="password"></mu-text-field>
-                            </mu-form-item>
-                            <mu-form-item label="تکرار رمزعبور" prop="password_confirm" :rules="password_confirmRules">
-                                <mu-text-field type="password" v-model="data.body.password_confirm" prop="password_confirm"></mu-text-field>
-                            </mu-form-item>
-                              </mu-col>
-                          </mu-row>
-                            <transition name="slideDown">
-                                <mu-form-item v-if="registerError && errorText.length > 0">
-                                    <mu-alert color="error">
-                                        <ul>
-                                          <li v-for="i in errorText">{{i}}</li>
-                                        </ul>
-                                    </mu-alert>
-                                </mu-form-item>
-                                </transition>
-                                <transition name="slideDown">
-                                <mu-form-item v-if="registerSuccess && LoginError==false">
-                                    <mu-alert color="success">
-                                        <span>عضویت شما با موفقیت انجام شد. در حال ورود خودکار...</span>
-                                    </mu-alert>
-                                </mu-form-item>
-                            </transition>
-                            <transition name="slideDown">
-                                <mu-form-item v-if="LoginError">
-                                    <mu-alert color="error">
-                                        <span>مشکلی در ورود خود کار به وجود آمده است. برای ورود به   </span> <router-link to="/login">این صفحه </router-link> <span>  مراجعه کنید </span>
-                                    </mu-alert>
-                                </mu-form-item>
-                            </transition>
-                            <mu-form-item>
-                                <mu-button :disabled="isRegistering && isLogingin" color="primary" @click="submit">ثبت نام</mu-button>
-                                <router-link to="/login" tag="mu-button">صفحه ورود</router-link>
-                            </mu-form-item>
-                        </mu-form>
-                    </mu-card-text>
-                </mu-card>
-            </mu-col>
-        </mu-row>
-    </mu-container>
+  <mu-container class="demo-container">
+    <mu-row gutter>
+      <mu-col span="12" sm="12" md="12" lg="8" xl="8" class="maginAuto">
+        <mu-card class="rtl loginCard">
+          <mu-card-title title="ثبت نام" sub-title="برای ثبت نام تمام فیلد های زیر را تکمیل کنید"></mu-card-title>
+          <mu-card-text>
+            <mu-form ref="form" :model="data.body" class="rtl">
+              <mu-row gutter>
+                <mu-col span="12" sm="12" md="12" lg="6" xl="6">
+                  <mu-form-item label="نام" prop="first_name" :rules="nameRules">
+                    <mu-text-field v-model="data.body.first_name" prop="first_name"></mu-text-field>
+                  </mu-form-item>
+                  <mu-form-item label="نام خانوادگی" prop="last_name" :rules="nameRules">
+                    <mu-text-field v-model="data.body.last_name" prop="last_name"></mu-text-field>
+                  </mu-form-item>
+                  <mu-form-item label="نام کاربری" prop="username" :rules="nameRules">
+                    <mu-text-field v-model="data.body.username" prop="username"></mu-text-field>
+                  </mu-form-item>
+                </mu-col>
+                <mu-col span="12" sm="12" md="12" lg="6" xl="6">
+                  <mu-form-item label="ایمیل" prop="email" :rules="usernameRules">
+                    <mu-text-field v-model="data.body.email" prop="email"></mu-text-field>
+                  </mu-form-item>
+                  <mu-form-item label="رمزعبور" prop="password" :rules="passwordRules">
+                    <mu-text-field type="password" v-model="data.body.password" prop="password"></mu-text-field>
+                  </mu-form-item>
+                  <mu-form-item
+                    label="تکرار رمزعبور"
+                    prop="password_confirm"
+                    :rules="password_confirmRules"
+                  >
+                    <mu-text-field
+                      type="password"
+                      v-model="data.body.password_confirm"
+                      prop="password_confirm"
+                    ></mu-text-field>
+                  </mu-form-item>
+                </mu-col>
+              </mu-row>
+              <transition name="slideDown">
+                <mu-form-item v-if="registerError && errorText.length > 0">
+                  <mu-alert color="error">
+                    <ul>
+                      <li v-for="i in errorText">{{i}}</li>
+                    </ul>
+                  </mu-alert>
+                </mu-form-item>
+              </transition>
+              <transition name="slideDown">
+                <mu-form-item v-if="registerSuccess && LoginError==false">
+                  <mu-alert color="success">
+                    <span>عضویت شما با موفقیت انجام شد. در حال ورود خودکار...</span>
+                  </mu-alert>
+                </mu-form-item>
+              </transition>
+              <transition name="slideDown">
+                <mu-form-item v-if="LoginError">
+                  <mu-alert color="error">
+                    <span>مشکلی در ورود خود کار به وجود آمده است. برای ورود به</span>
+                    <router-link to="/login">این صفحه</router-link>
+                    <span>مراجعه کنید</span>
+                  </mu-alert>
+                </mu-form-item>
+              </transition>
+              <mu-form-item>
+                <mu-button
+                  :disabled="isRegistering && isLogingin"
+                  color="primary"
+                  @click="submit"
+                >ثبت نام</mu-button>
+                <router-link to="/login" tag="mu-button">صفحه ورود</router-link>
+              </mu-form-item>
+            </mu-form>
+          </mu-card-text>
+        </mu-card>
+      </mu-col>
+    </mu-row>
+  </mu-container>
 </template>
 <style>
 .loginCard {
@@ -173,10 +187,11 @@ export default {
           let _this = this;
           this.$auth.register({
             data: this.data.body,
+            autoLogin: true,
             success: function(data) {
               _this.registerSuccess = true;
               _this.isRegistering = false;
-              setTimeout(function() {
+              /*setTimeout(function() {
                 _this.isLogingin = true;
                 let loginArr = _this.data.body;
                 loginArr["username"] = _this.data.body.email;
@@ -193,7 +208,7 @@ export default {
                     _this.isLogingin = false;
                   }
                 });
-              }, 2000);
+              }, 2000);*/
             },
             error: function(res) {
               _this.registerError = true;

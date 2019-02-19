@@ -348,3 +348,14 @@ body {
   text-align: right;
 }
 
+.mu-dialog-wrapper.postDialog {
+  max-height: 100%;
+  overflow: scroll;
+  background-color: #fff;
+}
+
+.mu-dialog {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+

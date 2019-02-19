@@ -16,16 +16,14 @@ Vue.axios.defaults.headers.common["X-CSRF-TOKEN"] = document
 
 Vue.router = new VueRouter({
     mode: "history",
-    routes: [
-        {
+    routes: [{
             path: "/",
             name: "default",
             component: require("./components/dashboard.vue"),
             meta: {
                 auth: true
             },
-            children: [
-                {
+            children: [{
                     path: "/feeds",
                     name: "feeds",
                     component: require("./components/pages/timeline.vue")
@@ -78,7 +76,7 @@ Vue.router = new VueRouter({
 
 Vue.use(require("@websanova/vue-auth"), {
     auth: {
-        request: function(req, token) {
+        request: function (req, token) {
             var refresh = req.url.indexOf("token") > -1;
             if (refresh) {
                 if (req["grant_type"] === "password") refresh = false;
@@ -98,7 +96,7 @@ Vue.use(require("@websanova/vue-auth"), {
                 };
             }
         },
-        response: function(res) {
+        response: function (res) {
             if (res.data.access_token && res.data.refresh_token) {
                 {
                     return res.data.access_token + ";" + res.data.refresh_token;
@@ -106,7 +104,7 @@ Vue.use(require("@websanova/vue-auth"), {
             }
         }
     },
-    parseUserData: function(data) {
+    parseUserData: function (data) {
         return data;
     },
     http: require("@websanova/vue-auth/drivers/http/axios.1.x.js"),
@@ -130,7 +128,8 @@ Vue.use(require("@websanova/vue-auth"), {
     },
     registerData: {
         url: "/api/register",
-        method: "POST"
+        method: "POST",
+        redirect: '/feeds'
     },
     refreshData: {
         url: "/oauth/token",
@@ -146,50 +145,50 @@ Vue.use(require("@websanova/vue-auth"), {
     },
     tokenStore: ["localStorage", "cookie"]
 });
-window.$ = function(peyload) {
+window.$ = function (peyload) {
     return document.querySelector(peyload);
 };
 var component = require("./components/routManager.vue");
 
 Vue.mixin({
     methods: {
-        follow: function(username) {
+        follow: function (username) {
             return Vue.axios
                 .patch("/api/" + username + "/follow")
-                .then(function(data) {
+                .then(function (data) {
                     return data.data;
                 })
-                .catch(function(data) {
+                .catch(function (data) {
                     return data.response.data;
                 });
         },
-        unFollow: function(username) {
+        unFollow: function (username) {
             return Vue.axios
                 .patch("/api/" + username + "/unfollow")
-                .then(function(data) {
+                .then(function (data) {
                     return data.data;
                 })
-                .catch(function(data) {
+                .catch(function (data) {
                     return data.response.data;
                 });
         },
-        like: function(username, id) {
+        like: function (username, id) {
             return Vue.axios
                 .patch("api/" + username + "/media/" + id + "/like")
-                .then(function(data) {
+                .then(function (data) {
                     return data.data;
                 })
-                .catch(function(data) {
+                .catch(function (data) {
                     return data.response.data;
                 });
         },
-        unLike: function(username, id) {
+        unLike: function (username, id) {
             return Vue.axios
                 .patch("api/" + username + "/media/" + id + "/disslike")
-                .then(function(data) {
+                .then(function (data) {
                     return data.data;
                 })
-                .catch(function(data) {
+                .catch(function (data) {
                     return data.response.data;
                 });
         }

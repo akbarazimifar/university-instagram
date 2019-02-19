@@ -133,7 +133,13 @@
       <mu-button slot="actions" flat @click="closeSimpleDialog">لغو</mu-button>
     </mu-dialog>
 
-    <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="openFullscreen">
+    <mu-dialog
+      width="360"
+      transition="slide-bottom"
+      fullscreen
+      :open.sync="openFullscreen"
+      class="postDialog"
+    >
       <mu-appbar color="primary" title>
         <mu-button slot="right" icon @click="closeFullscreenDialog">
           <mu-icon value="close"></mu-icon>
@@ -155,7 +161,7 @@
                 <mu-button
                   flat
                   color="primary"
-                  @click="loadLikesList"
+                  @click="loadLikesList(true)"
                 >تعداد لایک ها : {{selectedPost.likes_count}}</mu-button>
               </span>
             </mu-row>
@@ -202,7 +208,7 @@
                   >
                 </mu-avatar>
               </mu-list-item-action>
-              <mu-list-item-title>{{i.first_name+" "+i.last_name}}</mu-list-item-title>
+              <mu-list-item-title>{{i.username}}</mu-list-item-title>
             </mu-list-item>
             <mu-divider/>
           </template>
@@ -266,7 +272,7 @@
       :open.sync="showLikesList"
       class="followerLists"
     >
-      <mu-load-more :loading="loading" @load="loadLikesList" loading-text="در حال بارگذاری">
+      <mu-load-more :loading="loading" @load="loadLikesList(false)" loading-text="در حال بارگذاری">
         <mu-list>
           <template v-for="i in likesListMembers">
             <mu-list-item
@@ -283,7 +289,7 @@
                   >
                 </mu-avatar>
               </mu-list-item-action>
-              <mu-list-item-title>{{i.first_name +" "+i.last_name}}</mu-list-item-title>
+              <mu-list-item-title>{{i.username}}</mu-list-item-title>
             </mu-list-item>
             <mu-divider/>
           </template>
@@ -358,7 +364,7 @@ export default {
           page: this.followersPage + 1
         })
         .then(resp => {
-          _this.followersPage++;
+          _this.followersPage = _this.followersPage + 1;
           _this.loading = false;
           resp.data.data.filter(element => {
             this.followersListMembers.push(element);
@@ -373,14 +379,15 @@ export default {
           page: this.followingPage + 1
         })
         .then(resp => {
-          _this.followingPage++;
+          _this.followingPage = _this.followingPage + 1;
           _this.loading = false;
           resp.data.data.filter(element => {
             this.followingListMembers.push(element);
           });
         });
     },
-    loadLikesList() {
+    loadLikesList(bool) {
+      if (bool) this.likesListMembers = [];
       this.showLikesList = true;
       this.loading = true;
       let _this = this;
@@ -396,7 +403,7 @@ export default {
           }
         )
         .then(resp => {
-          _this.likesPage++;
+          _this.likesPage = _this.likesPage + 1;
           _this.loading = false;
           if (typeof resp.data[0].user_id !== "undefined") {
             resp.data.filter(element => {

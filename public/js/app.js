@@ -3362,6 +3362,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3426,7 +3432,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       Vue.axios.get("/api/" + this.$route.params.username + "/followers", {
         page: this.followersPage + 1
       }).then(function (resp) {
-        _this.followersPage++;
+        _this.followersPage = _this.followersPage + 1;
         _this.loading = false;
         resp.data.data.filter(function (element) {
           _this3.followersListMembers.push(element);
@@ -3441,23 +3447,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       Vue.axios.get("/api/" + this.$route.params.username + "/followings", {
         page: this.followingPage + 1
       }).then(function (resp) {
-        _this.followingPage++;
+        _this.followingPage = _this.followingPage + 1;
         _this.loading = false;
         resp.data.data.filter(function (element) {
           _this4.followingListMembers.push(element);
         });
       });
     },
-    loadLikesList: function loadLikesList() {
+    loadLikesList: function loadLikesList(bool) {
       var _this5 = this;
 
+      if (bool) this.likesListMembers = [];
       this.showLikesList = true;
       this.loading = true;
       var _this = this;
       Vue.axios.get("/api/" + this.$route.params.username + "/media/" + this.selectedPost.id + "/likes", {
         page: this.likesPage + 1
       }).then(function (resp) {
-        _this.likesPage++;
+        _this.likesPage = _this.likesPage + 1;
         _this.loading = false;
         if (typeof resp.data[0].user_id !== "undefined") {
           resp.data.filter(function (element) {
@@ -3591,6 +3598,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3775,6 +3799,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3790,16 +3822,17 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
   },
 
   methods: {
-    loadLikesList: function loadLikesList() {
+    loadLikesList: function loadLikesList(bool) {
       var _this2 = this;
 
+      if (bool) this.likesListMembers = [];
       this.showLikesList = true;
       this.loading = true;
       var _this = this;
       Vue.axios.get("/api/" + this.selectedPost.user.username + "/media/" + this.selectedPost.id + "/likes", {
         page: this.likesPage + 1
       }).then(function (resp) {
-        _this.likesPage++;
+        _this.likesPage = _this.likesPage + 1;
         _this.loading = false;
         if (typeof resp.data[0].user_id !== "undefined") {
           resp.data.filter(function (element) {
@@ -3833,20 +3866,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
   },
   mounted: function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
-      var _this, response;
+      var _this;
 
       return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _this = this;
-              _context.next = 3;
-              return this.follow("qqwe23");
-
-            case 3:
-              response = _context.sent;
-
               //console.log(response);
+
               if (this.$auth.check()) {
                 Vue.axios.get("/api/feeds").then(function (data) {
                   //console.log(data.data.data);
@@ -3854,7 +3882,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 });
               }
 
-            case 5:
+            case 2:
             case "end":
               return _context.stop();
           }
@@ -3955,8 +3983,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     fileUploadClear: function fileUploadClear() {
       var input = this.$refs.fileupload;
-      input.type = 'text';
-      input.type = 'file';
+      input.type = "text";
+      input.type = "file";
       this.caption = "";
     }
   }
@@ -3969,6 +3997,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4152,27 +4194,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           var _this = _this3;
           _this3.$auth.register({
             data: _this3.data.body,
+            autoLogin: true,
             success: function success(data) {
               _this.registerSuccess = true;
               _this.isRegistering = false;
-              setTimeout(function () {
+              /*setTimeout(function() {
                 _this.isLogingin = true;
-                var loginArr = _this.data.body;
+                let loginArr = _this.data.body;
                 loginArr["username"] = _this.data.body.email;
                 _this.$auth.login({
                   data: _this.data.body,
                   rememberMe: true,
                   redirect: "/feeds",
-                  success: function success() {
+                  success: function() {
                     _this.LoginError = false;
                     _this.isLogingin = false;
                   },
-                  error: function error(val) {
+                  error: function(val) {
                     _this.LoginError = true;
                     _this.isLogingin = false;
                   }
                 });
-              }, 2000);
+              }, 2000);*/
             },
             error: function error(res) {
               _this.registerError = true;
@@ -19288,7 +19331,7 @@ var render = function() {
             _vm._v(" "),
             _c("input", {
               ref: "fileupload",
-              attrs: { type: "file" },
+              attrs: { type: "file", accept: "image/*" },
               on: { change: _vm.onFileChanged }
             }),
             _vm._v(" "),
@@ -19400,22 +19443,31 @@ var render = function() {
           { key: index },
           [
             _c(
-              "mu-card-header",
-              {
-                key: index,
-                attrs: { title: f.user.first_name + " " + f.user.last_name }
-              },
+              "router-link",
+              { attrs: { to: "/u/" + f.user.username } },
               [
-                _c("mu-avatar", { attrs: { slot: "avatar" }, slot: "avatar" }, [
-                  _c("img", {
-                    attrs: {
-                      src:
-                        f.user.profile != null
-                          ? "/storage/profiles/" + f.user.profile.thumb_path
-                          : "/img/profile.jpg"
-                    }
-                  })
-                ])
+                _c(
+                  "mu-card-header",
+                  { key: index, attrs: { title: f.user.username } },
+                  [
+                    _c(
+                      "mu-avatar",
+                      { attrs: { slot: "avatar" }, slot: "avatar" },
+                      [
+                        _c("img", {
+                          attrs: {
+                            src:
+                              f.user.profile != null
+                                ? "/storage/profiles/" +
+                                  f.user.profile.thumb_path
+                                : "/img/profile.jpg"
+                          }
+                        })
+                      ]
+                    )
+                  ],
+                  1
+                )
               ],
               1
             ),
@@ -19499,6 +19551,7 @@ var render = function() {
       _c(
         "mu-dialog",
         {
+          staticClass: "postDialog",
           attrs: {
             width: "360",
             transition: "slide-bottom",
@@ -19561,7 +19614,11 @@ var render = function() {
                             "mu-button",
                             {
                               attrs: { flat: "", color: "primary" },
-                              on: { click: _vm.loadLikesList }
+                              on: {
+                                click: function($event) {
+                                  _vm.loadLikesList(true)
+                                }
+                              }
                             },
                             [
                               _vm._v(
@@ -19664,7 +19721,11 @@ var render = function() {
                 loading: _vm.loading,
                 "loading-text": "در حال بارگذاری"
               },
-              on: { load: _vm.loadLikesList }
+              on: {
+                load: function($event) {
+                  _vm.loadLikesList(false)
+                }
+              }
             },
             [
               _c(
@@ -19705,9 +19766,7 @@ var render = function() {
                             1
                           ),
                           _vm._v(" "),
-                          _c("mu-list-item-title", [
-                            _vm._v(_vm._s(i.first_name + " " + i.last_name))
-                          ])
+                          _c("mu-list-item-title", [_vm._v(_vm._s(i.username))])
                         ],
                         1
                       ),
@@ -19953,7 +20012,7 @@ var render = function() {
       [
         _c("mu-text-field", {
           staticClass: "rtl",
-          attrs: { label: "جستوجو...", "label-float": "" },
+          attrs: { label: "جستجو...", "label-float": "" },
           on: { submit: _vm.search },
           model: {
             value: _vm.searchInput,
@@ -20002,17 +20061,21 @@ var render = function() {
             _vm._v(" "),
             _c("mu-card-text", [
               _vm._v(
-                "\n          دنبال‌کننده‌ها: " + _vm._s(result.followers_count)
+                "\n        دنبال‌کننده‌ها: " +
+                  _vm._s(result.followers_count) +
+                  "\n        "
               ),
               _c("br"),
               _vm._v(
-                "\n          دنبال‌شنوده‌ها: " + _vm._s(result.followings_count)
+                "\n        دنبال‌شنوده‌ها: " +
+                  _vm._s(result.followings_count) +
+                  "\n        "
               ),
               _c("br"),
               _vm._v(
-                "\n          پست‌ها: " +
+                "\n\n        پست‌ها: " +
                   _vm._s(result.medias_count) +
-                  "\n\n        "
+                  "\n      "
               )
             ]),
             _vm._v(" "),
@@ -20680,17 +20743,17 @@ var render = function() {
                                         [
                                           _c("span", [
                                             _vm._v(
-                                              "مشکلی در ورود خود کار به وجود آمده است. برای ورود به   "
+                                              "مشکلی در ورود خود کار به وجود آمده است. برای ورود به"
                                             )
                                           ]),
                                           _vm._v(" "),
                                           _c(
                                             "router-link",
                                             { attrs: { to: "/login" } },
-                                            [_vm._v("این صفحه ")]
+                                            [_vm._v("این صفحه")]
                                           ),
                                           _vm._v(" "),
-                                          _c("span", [_vm._v("  مراجعه کنید ")])
+                                          _c("span", [_vm._v("مراجعه کنید")])
                                         ],
                                         1
                                       )
@@ -21265,6 +21328,7 @@ var render = function() {
       _c(
         "mu-dialog",
         {
+          staticClass: "postDialog",
           attrs: {
             width: "360",
             transition: "slide-bottom",
@@ -21327,7 +21391,11 @@ var render = function() {
                             "mu-button",
                             {
                               attrs: { flat: "", color: "primary" },
-                              on: { click: _vm.loadLikesList }
+                              on: {
+                                click: function($event) {
+                                  _vm.loadLikesList(true)
+                                }
+                              }
                             },
                             [
                               _vm._v(
@@ -21469,9 +21537,7 @@ var render = function() {
                             1
                           ),
                           _vm._v(" "),
-                          _c("mu-list-item-title", [
-                            _vm._v(_vm._s(i.first_name + " " + i.last_name))
-                          ])
+                          _c("mu-list-item-title", [_vm._v(_vm._s(i.username))])
                         ],
                         1
                       ),
@@ -21640,7 +21706,11 @@ var render = function() {
                 loading: _vm.loading,
                 "loading-text": "در حال بارگذاری"
               },
-              on: { load: _vm.loadLikesList }
+              on: {
+                load: function($event) {
+                  _vm.loadLikesList(false)
+                }
+              }
             },
             [
               _c(
@@ -21681,9 +21751,7 @@ var render = function() {
                             1
                           ),
                           _vm._v(" "),
-                          _c("mu-list-item-title", [
-                            _vm._v(_vm._s(i.first_name + " " + i.last_name))
-                          ])
+                          _c("mu-list-item-title", [_vm._v(_vm._s(i.username))])
                         ],
                         1
                       ),
@@ -36753,7 +36821,8 @@ Vue.use(__webpack_require__("./node_modules/@websanova/vue-auth/src/index.js"), 
     },
     registerData: {
         url: "/api/register",
-        method: "POST"
+        method: "POST",
+        redirect: '/feeds'
     },
     refreshData: {
         url: "/oauth/token",
