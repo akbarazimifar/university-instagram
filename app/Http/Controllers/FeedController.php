@@ -28,6 +28,7 @@ class FeedController extends Controller
             ->join('users_relationships', 'users.id', '=', 'users_relationships.following_id')
             ->where('users_relationships.is_accepted', '=', true)
             ->orderByDesc('created_at')
+            ->distinct()
             ->paginate();
     }
 
