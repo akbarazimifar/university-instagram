@@ -361,7 +361,9 @@ export default {
       let _this = this;
       Vue.axios
         .get("/api/" + this.$route.params.username + "/followers", {
-          page: this.followersPage + 1
+          params: {
+            page: this.followersPage + 1
+          }
         })
         .then(resp => {
           _this.followersPage = _this.followersPage + 1;
@@ -376,7 +378,9 @@ export default {
       let _this = this;
       Vue.axios
         .get("/api/" + this.$route.params.username + "/followings", {
-          page: this.followingPage + 1
+          params: {
+            page: this.followingPage + 1
+          }
         })
         .then(resp => {
           _this.followingPage = _this.followingPage + 1;
@@ -399,7 +403,9 @@ export default {
             this.selectedPost.id +
             "/likes",
           {
-            page: this.likesPage + 1
+            params: {
+              page: this.likesPage + 1
+            }
           }
         )
         .then(resp => {

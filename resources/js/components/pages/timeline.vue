@@ -142,7 +142,9 @@ export default {
             this.selectedPost.id +
             "/likes",
           {
-            page: this.likesPage + 1
+            params: {
+              page: this.likesPage + 1
+            }
           }
         )
         .then(resp => {
